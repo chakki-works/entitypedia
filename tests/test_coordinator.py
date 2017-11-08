@@ -88,6 +88,12 @@ class Location(TestCoordinator):
     def test_river(self):
         self.execute('location/geological_region/river')
 
+    def test_continental_region(self):
+        self.execute('location/region/continental_region')
+
+    def test_domestic_region(self):
+        self.execute('location/region/domestic_region')
+
     def test_astral_body_other(self):
         self.execute('location/astral_body/astral_body_other')
 
