@@ -38,7 +38,7 @@ class Name(TestCoordinator):
         pass
 
     def test_person(self):
-        pass
+        self.execute('name/person')
 
     def test_god(self):
         self.execute('name/god')
@@ -46,11 +46,11 @@ class Name(TestCoordinator):
 
 class Organization(TestCoordinator):
 
-    """
-    def test_organizaton_other(self):
+
+    def _test_organizaton_other(self):
         self.execute('organization/organizaton_other')
 
-    def test_international_organization(self):
+    def _test_international_organization(self):
         self.execute('organization/international_organization')
 
     def test_show_organization(self):
@@ -65,7 +65,7 @@ class Organization(TestCoordinator):
     def test_nationality(self):
         self.execute('organization/ethnic_group/nationality')
 
-    def test_sports_organization_other(self):
+    def _test_sports_organization_other(self):
         self.execute('organization/sports_organization/sports_organization_other')
 
     def test_pro_sports_organization(self):
@@ -74,12 +74,12 @@ class Organization(TestCoordinator):
     def test_sports_league(self):
         self.execute('organization/sports_organization/sports_league')
 
-    def test_corporation_other(self):
+    def _test_corporation_other(self):
         self.execute('organization/corporation/corporation_other')
 
-    def test_compnay_group(self):
+    def _test_compnay_group(self):
         self.execute('organization/corporation/compnay_group')
-    """
+
 
     def test_company(self):
         self.execute('organization/corporation/company')
