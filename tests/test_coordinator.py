@@ -46,7 +46,6 @@ class Name(TestCoordinator):
 
 class Organization(TestCoordinator):
 
-
     def _test_organizaton_other(self):
         self.execute('organization/organizaton_other')
 
@@ -79,7 +78,6 @@ class Organization(TestCoordinator):
 
     def _test_compnay_group(self):
         self.execute('organization/corporation/compnay_group')
-
 
     def test_company(self):
         self.execute('organization/corporation/company')
@@ -260,6 +258,36 @@ class NaturalObject(TestCoordinator):
 
     def test_mineral(self):
         self.execute('natural_object/mineral')
+
+    def test_living_thing_other(self):
+        self.execute('natural_object/living_thing/living_thing_other')
+
+    def test_fungus(self):
+        self.execute('natural_object/living_thing/fungus')
+
+    def test_mollusc_arthropod(self):
+        self.execute('natural_object/living_thing/mollusc_arthropod')
+
+    def test_insect(self):
+        self.execute('natural_object/living_thing/insect')
+
+    def test_fish(self):
+        self.execute('natural_object/living_thing/fish')
+
+    def test_amphibia(self):
+        self.execute('natural_object/living_thing/amphibia')
+
+    def test_reptile(self):
+        self.execute('natural_object/living_thing/reptile')
+
+    def test_bird(self):
+        self.execute('natural_object/living_thing/bird')
+
+    def test_mammal(self):
+        self.execute('natural_object/living_thing/mammal')
+
+    def test_flora(self):
+        self.execute('natural_object/living_thing/flora')
 
 
 class Disease(TestCoordinator):
