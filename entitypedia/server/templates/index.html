@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ static_url('index.css') }}" type="text/css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@2.2.6"></script>
+{% end %}
+
+{% block body %}
+<div class="container">
+    <div class="content has-text-centered">
+        <div id="main" >
+            <figure class="image is-128x128" style="margin:auto">
+                <img src="{{ static_url('logo.png') }}" >
+            </figure>
+            <p class="title">
+                Entitypedia
+            </p>
+            <hr>
+            <div class="field has-addons region" style="max-width:800px; margin:auto">
+                <p class="control is-expanded">
+                    <input 
+                    class="input" type="text" placeholder="Please input the key words"
+                    v-model="query" v-bind:disabled="working">
+                </p>
+                <p class="control" style="width:30px;">
+                    <button id="search" class="button" v-on:click="search" v-bind:disabled="working">
+                        <span class="icon">
+                            <i class="fa fa-search"></i>
+                        </span>
+                    </button>
+                </p>
+                {% module xsrf_form_html() %}
+            </div>
+            <section id="posts" class="container">
+                <post v-for="r in results" :key="r.id" v-bind:post="r"></post>
+            </section>
+        </div>
+    </div>
+
+</div>
+
+{% end %}
+
+{% block bottom %}
+<template id="postTemplate">
+    <article class="media">
+        <figure class="media-left">
+            <p >
+                <meter v-bind:value="post.score" low="0.7" optimum="1.0">[[post.score]]</meter>
+            </p>
+        </figure>
+        <div class="media-content">
+            <div class="content">
+            <p>
+                <strong><a v-bind:href="post.url">[[post.entity]]</a></strong><br>
+                [[post.entity_type]]
+            </p>
+            </div>
+        </div>
+    </article>
+</template>
+<script src="{{ static_url('index.js') }}"></script>
+{% end %}

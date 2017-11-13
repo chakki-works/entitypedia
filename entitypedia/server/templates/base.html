@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Elephant Sense</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.0/css/bulma.min.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+    {% block head %}{% end %}
+  </head>
+  <body>
+    <div id="body">
+        <section id="content" class="section">
+          {% block body %}{% end %}
+        </section>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="content">
+            <p>
+                <strong>Entitypedia</strong> by <a href="https://github.com/chakki-works">chakki-works</a>.<br/>
+            </p>
+            </div>
+        </div>
+    </footer>
+    {% block bottom %}{% end %}
+  </body>
+</html>
