@@ -223,8 +223,23 @@ class Facility(TestCoordinator):
 
 class Product(TestCoordinator):
 
+    def test_weapon(self):
+        self.execute('product/weapon')
+
+    def test_award(self):
+        self.execute('product/award')
+
+    def test_decoration(self):
+        self.execute('product/decoration')
+
     def test_offense(self):
         self.execute('product/offense')
+
+    def test_aircraft(self):
+        self.execute('product/vehicle/aircraft')
+
+    def test_spaceship(self):
+        self.execute('product/vehicle/spaceship')
 
     def test_newspaper(self):
         self.execute('product/printing/newspaper')
