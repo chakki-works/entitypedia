@@ -21,5 +21,8 @@ class CSVSaver(BaseSaver):
         with open(filename, 'a') as f:
             writer = csv.writer(f, lineterminator='\n')
             for result in obj['results']['bindings']:
-                row = [result['name']['value'], result['url']['value']]
+                row = [result['name']['value'], result['url']['value'],
+                       result['id']['value'], result['thumbnail']['value'] if 'thumbnail' in result else '',
+                       result['abstract']['value'] if 'abstract' in result else ''
+                       ]
                 writer.writerow(row)
