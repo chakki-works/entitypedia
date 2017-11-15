@@ -47,9 +47,9 @@
     <article class="media">
         <figure class="media-left">
             <p >
-                <!--<meter v-bind:value="post.score" low="0.7" optimum="1.0">[[post.score]]</meter>-->
-                <figure class="image is-128x128">
-                    <img src="{{ static_url('logo.png') }}" >
+                <figure class="image">
+                    <img v-bind:src="post.image_url"
+                         style="width:150px;height:150px;border-radius:400px;border:5px solid #fff;center center;">
                 </figure>
             </p>
         </figure>
@@ -60,6 +60,9 @@
             </p>
             <p class="subtitle is-5">
                 [[post.entity_type]]
+            </p>
+            <p>
+                [[post.abstract]]
             </p>
             </div>
         </div>

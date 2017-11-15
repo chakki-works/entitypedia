@@ -22,10 +22,12 @@ class SearchHandler(tornado.web.RequestHandler):
         data = tornado.escape.json_decode(self.request.body)
         query = data["query"]
         res = trie.start_with_prefix(query)
+        alt_image = self.static_url('no_image2.png')
         posts = [{'entity': e,
                   'url': entity_dic[e]['url'],
-                  'score':random.random(),
-                  'entity_type': entity_dic[e]['type']} for e in res]
+                  'image_url': entity_dic[e]['image_url'] or alt_image,
+                  'abstract': entity_dic[e]['abstract'],
+                  'entity_type': entity_dic[e]['type'].replace('/', ' > ')} for e in res]
         message = {"posts": posts}
         self.write(message)
 

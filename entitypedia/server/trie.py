@@ -132,12 +132,17 @@ def create_trie():
             reader = csv.reader(f)
             for line in reader:
                 try:
-                    word, url = line[0], line[1]
+                    word, url, page_id, image_url, abst = line
+                    trie.add(word)
+                    entity_dic[word]['type'] = entity_type
+                    entity_dic[word]['url'] = url
+                    entity_dic[word]['id'] = page_id
+                    entity_dic[word]['id'] = page_id
+                    entity_dic[word]['image_url'] = image_url
+                    entity_dic[word]['abstract'] = abst
                 except ValueError:
                     print('Error line is: {}'.format(line))
-                trie.add(word)
-                entity_dic[word]['type'] = entity_type
-                entity_dic[word]['url'] = url
+
     print('Created.')
 
     return trie, entity_dic
