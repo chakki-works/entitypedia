@@ -241,6 +241,12 @@ class Product(TestCoordinator):
     def test_spaceship(self):
         self.execute('product/vehicle/spaceship')
 
+    def test_movie(self):
+        self.execute('product/art/movie')
+
+    def test_music(self):
+        self.execute('product/art/music')
+
     def test_newspaper(self):
         self.execute('product/printing/newspaper')
 
@@ -327,3 +333,9 @@ class Timex(TestCoordinator):
 
     def test_day_of_week(self):
         self.execute('timex/day_of_week')
+
+    def test_date(self):
+        self.execute('timex/date')
+
+    def test_era(self):
+        self.execute('timex/era')

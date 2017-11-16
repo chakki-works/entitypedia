@@ -127,7 +127,7 @@ def create_trie():
 
     for file in files:
         idx = file.index('seeds/')
-        entity_type = file[idx+len('seeds/'):].rstrip('.csv')
+        entity_type = file[idx+len('seeds/'):][:-4]  # cut '.csv'
         with open(file) as f:
             reader = csv.reader(f)
             for line in reader:
