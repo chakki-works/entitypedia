@@ -235,11 +235,23 @@ class Product(TestCoordinator):
     def test_offense(self):
         self.execute('product/offense')
 
+    def test_vehicle_other(self):
+        self.execute('product/vehicle/vehicle_other')
+
+    def test_car(self):
+        self.execute('product/vehicle/car')
+
+    def test_train(self):
+        self.execute('product/vehicle/train')
+
     def test_aircraft(self):
         self.execute('product/vehicle/aircraft')
 
     def test_spaceship(self):
         self.execute('product/vehicle/spaceship')
+
+    def test_ship(self):
+        self.execute('product/vehicle/ship')
 
     def test_movie(self):
         self.execute('product/art/movie')
