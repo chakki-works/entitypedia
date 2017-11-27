@@ -35,7 +35,7 @@ class TestCoordinator(unittest.TestCase):
 class Name(TestCoordinator):
 
     def test_name_other(self):
-        pass
+        self.execute('name/name_other')
 
     def test_person(self):
         self.execute('name/person')
@@ -253,6 +253,12 @@ class Product(TestCoordinator):
     def test_ship(self):
         self.execute('product/vehicle/ship')
 
+    def test_picture(self):
+        self.execute('product/art/picture')
+
+    def test_broadcast_program(self):
+        self.execute('product/art/broadcast_program')
+
     def test_movie(self):
         self.execute('product/art/movie')
 
@@ -261,6 +267,9 @@ class Product(TestCoordinator):
 
     def test_newspaper(self):
         self.execute('product/printing/newspaper')
+
+    def test_academic(self):
+        self.execute('product/doctrine_method/academic')
 
     def test_religion(self):
         self.execute('product/doctrine_method/religion')
@@ -274,8 +283,17 @@ class Product(TestCoordinator):
 
 class Event(TestCoordinator):
 
+    def test_conference(self):
+        self.execute('event/occasion/conference')
+
+    def test_incident_other(self):
+        self.execute('event/incident/incident_other')
+
     def test_war(self):
         self.execute('event/incident/war')
+
+    def test_natural_disaster(self):
+        self.execute('event/natural_phenomenon/natural_disaster')
 
     def test_earthquake(self):
         self.execute('event/natural_phenomenon/earthquake')
