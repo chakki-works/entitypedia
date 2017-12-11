@@ -43,6 +43,9 @@ class Name(TestCoordinator):
     def test_god(self):
         self.execute('name/god')
 
+    def test_character(self):
+        self.execute('name/character')
+
 
 class Organization(TestCoordinator):
 
@@ -265,14 +268,26 @@ class Product(TestCoordinator):
     def test_music(self):
         self.execute('product/art/music')
 
+    def test_book(self):
+        self.execute('product/art/book')
+
     def test_newspaper(self):
         self.execute('product/printing/newspaper')
+
+    def test_magazine(self):
+        self.execute('product/printing/magazine')
 
     def test_academic(self):
         self.execute('product/doctrine_method/academic')
 
     def test_religion(self):
         self.execute('product/doctrine_method/religion')
+
+    def test_sport(self):
+        self.execute('product/doctrine_method/sport')
+
+    def test_style(self):
+        self.execute('product/doctrine_method/style')
 
     def test_national_language(self):
         self.execute('product/language/national_language')
@@ -282,6 +297,9 @@ class Product(TestCoordinator):
 
 
 class Event(TestCoordinator):
+
+    def test_game(self):
+        self.execute('event/occasion/game')
 
     def test_conference(self):
         self.execute('event/occasion/conference')
