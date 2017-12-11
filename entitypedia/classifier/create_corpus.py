@@ -3,6 +3,8 @@ import fnmatch
 import json
 import os
 
+from utils import *
+
 SAVE_FILE = 'docs.json'
 
 
@@ -39,9 +41,31 @@ def save(docs):
         json.dump(docs, f, indent=4)
 
 
+def filter_abstracts(file_abstract, file_seed):
+    seeds = dict([(j['id'], j['class']) for j in load_jsonl(file_seed)])
+    jsons = load_jsonl(file_abstract)
+
+    for j in jsons:
+        id = j['id']
+        if id not in seeds:
+            continue
+        yield {'text': j['text'], 'label': seeds[id]}
+
+
 if __name__ == '__main__':
+    """
     dirname = os.path.join(os.path.dirname(__file__), '../data/raw')
     filenames = list_files(dirname)
     files = read_files(filenames)
     texts = normalize(files)
     save(texts)
+    """
+
+    BASE = os.path.join(os.path.dirname(__file__), '../../data/')
+    file_seed = os.path.join(BASE, 'seeds.jsonl')
+    file_abstract = os.path.join(BASE, 'abstracts.jsonl')
+    abstracts = filter_abstracts(file_abstract, file_seed)
+    with open('filtered_abstracts.jsonl', 'w') as f:
+        for a in abstracts:
+            f.write(json.dumps(a))
+            f.write('\n')

@@ -9,7 +9,7 @@ from utils import *
 
 if __name__ == '__main__':
     save_path = './dictionary.json'
-    file_path = os.path.join(os.path.dirname(__file__), '../../data/filtered_abstracts.jsonl')
+    file_path = os.path.join(os.path.dirname(__file__), '../../data/category_class.jsonl')
     word_indices, label_indices = maybe_create_indices(file_path, save_path)
 
     vocab_sz = len(word_indices)
@@ -30,4 +30,3 @@ if __name__ == '__main__':
     y_pred = model.predict(x_test, batch_size=batch_size)
     y_pred = np.argmax(y_pred, axis=1)
     evaluate_f1(y_test, y_pred, label_indices)
-
