@@ -124,6 +124,9 @@ class Location(TestCoordinator):
     def test_domestic_region(self):
         self.execute('location/region/domestic_region')
 
+    def test_geological_region_other(self):
+        self.execute('location/geological_region/geological_region_other')
+
     def test_mountain(self):
         self.execute('location/geological_region/mountain')
 
@@ -226,6 +229,12 @@ class Facility(TestCoordinator):
 
 class Product(TestCoordinator):
 
+    def test_clothing(self):
+        self.execute('product/clothing')
+
+    def test_drug(self):
+        self.execute('product/drug')
+
     def test_weapon(self):
         self.execute('product/weapon')
 
@@ -255,6 +264,9 @@ class Product(TestCoordinator):
 
     def test_ship(self):
         self.execute('product/vehicle/ship')
+
+    def test_dish(self):
+        self.execute('product/food/dish')
 
     def test_picture(self):
         self.execute('product/art/picture')
@@ -289,6 +301,12 @@ class Product(TestCoordinator):
     def test_style(self):
         self.execute('product/doctrine_method/style')
 
+    def test_treaty(self):
+        self.execute('product/rule/treaty')
+
+    def test_law(self):
+        self.execute('product/rule/law')
+
     def test_national_language(self):
         self.execute('product/language/national_language')
 
@@ -309,6 +327,9 @@ class Event(TestCoordinator):
 
     def test_war(self):
         self.execute('event/incident/war')
+
+    def test_natural_phenomenon_other(self):
+        self.execute('event/natural_phenomenon/natural_phenomenon_other')
 
     def test_natural_disaster(self):
         self.execute('event/natural_phenomenon/natural_disaster')
