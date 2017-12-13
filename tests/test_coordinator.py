@@ -52,7 +52,7 @@ class Organization(TestCoordinator):
     def _test_organizaton_other(self):
         self.execute('organization/organizaton_other')
 
-    def _test_international_organization(self):
+    def test_international_organization(self):
         self.execute('organization/international_organization')
 
     def test_show_organization(self):
@@ -67,7 +67,7 @@ class Organization(TestCoordinator):
     def test_nationality(self):
         self.execute('organization/ethnic_group/nationality')
 
-    def _test_sports_organization_other(self):
+    def test_sports_organization_other(self):
         self.execute('organization/sports_organization/sports_organization_other')
 
     def test_pro_sports_organization(self):
@@ -76,11 +76,11 @@ class Organization(TestCoordinator):
     def test_sports_league(self):
         self.execute('organization/sports_organization/sports_league')
 
-    def _test_corporation_other(self):
+    def test_corporation_other(self):
         self.execute('organization/corporation/corporation_other')
 
-    def _test_compnay_group(self):
-        self.execute('organization/corporation/compnay_group')
+    def test_company_group(self):
+        self.execute('organization/corporation/company_group')
 
     def test_company(self):
         self.execute('organization/corporation/company')
@@ -106,6 +106,9 @@ class Location(TestCoordinator):
     def test_spa(self):
         self.execute('location/spa')
 
+    def test_gpe_other(self):
+        self.execute('location/gpe/gpe_other')
+
     def test_city(self):
         self.execute('location/gpe/city')
 
@@ -117,6 +120,9 @@ class Location(TestCoordinator):
 
     def test_country(self):
         self.execute('location/gpe/country')
+
+    def test_region_other(self):
+        self.execute('location/region/region_other')
 
     def test_continental_region(self):
         self.execute('location/region/continental_region')
@@ -156,6 +162,9 @@ class Location(TestCoordinator):
 
     def test_constellation(self):
         self.execute('location/astral_body/constellation')
+
+    def test_address_other(self):
+        self.execute('location/address/address_other')
 
 
 class Facility(TestCoordinator):
@@ -247,6 +256,9 @@ class Product(TestCoordinator):
     def test_offense(self):
         self.execute('product/offense')
 
+    def test_class(self):
+        self.execute('product/class')
+
     def test_vehicle_other(self):
         self.execute('product/vehicle/vehicle_other')
 
@@ -300,6 +312,12 @@ class Product(TestCoordinator):
 
     def test_style(self):
         self.execute('product/doctrine_method/style')
+
+    def test_theory(self):
+        self.execute('product/doctrine_method/theory')
+
+    def test_movement(self):
+        self.execute('product/doctrine_method/movement')
 
     def test_treaty(self):
         self.execute('product/rule/treaty')
