@@ -49,8 +49,8 @@ class Name(TestCoordinator):
 
 class Organization(TestCoordinator):
 
-    def _test_organizaton_other(self):
-        self.execute('organization/organizaton_other')
+    def test_organizaton_other(self):
+        self.execute('organization/organization_other')
 
     def test_international_organization(self):
         self.execute('organization/international_organization')
@@ -102,6 +102,9 @@ class Organization(TestCoordinator):
 
 
 class Location(TestCoordinator):
+
+    def test_location_other(self):
+        self.execute('location/location_other')
 
     def test_spa(self):
         self.execute('location/spa')
@@ -169,11 +172,17 @@ class Location(TestCoordinator):
 
 class Facility(TestCoordinator):
 
+    def test_facility_other(self):
+        self.execute('facility/facility_other')
+
     def test_archaeological_place_other(self):
         self.execute('facility/archaeological_place/archaeological_place_other')
 
     def test_tumulus(self):
         self.execute('facility/archaeological_place/tumulus')
+
+    def test_goe_other(self):
+        self.execute('facility/goe/goe_other')
 
     def test_public_institution(self):
         self.execute('facility/goe/public_institution')
@@ -219,6 +228,9 @@ class Facility(TestCoordinator):
 
     def test_port(self):
         self.execute('facility/goe/port')
+
+    def test_line_other(self):
+        self.execute('facility/line/line_other')
 
     def test_railroad(self):
         self.execute('facility/line/railroad')
@@ -277,6 +289,9 @@ class Product(TestCoordinator):
     def test_ship(self):
         self.execute('product/vehicle/ship')
 
+    def test_food_other(self):
+        self.execute('product/food/food_other')
+
     def test_dish(self):
         self.execute('product/food/dish')
 
@@ -301,6 +316,9 @@ class Product(TestCoordinator):
     def test_magazine(self):
         self.execute('product/printing/magazine')
 
+    def test_culture(self):
+        self.execute('product/doctrine_method/culture')
+
     def test_academic(self):
         self.execute('product/doctrine_method/academic')
 
@@ -319,14 +337,23 @@ class Product(TestCoordinator):
     def test_movement(self):
         self.execute('product/doctrine_method/movement')
 
+    def test_plan(self):
+        self.execute('product/doctrine_method/plan')
+
     def test_treaty(self):
         self.execute('product/rule/treaty')
 
     def test_law(self):
         self.execute('product/rule/law')
 
+    def test_language_other(self):
+        self.execute('product/language/language_other')
+
     def test_national_language(self):
         self.execute('product/language/national_language')
+
+    def test_unit_other(self):
+        self.execute('product/unit/unit_other')
 
     def test_currency(self):
         self.execute('product/unit/currency')
@@ -357,6 +384,9 @@ class Event(TestCoordinator):
 
 
 class NaturalObject(TestCoordinator):
+
+    def test_natural_object_other(self):
+        self.execute('natural_object/natural_object_other')
 
     def test_element(self):
         self.execute('natural_object/element')
