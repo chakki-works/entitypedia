@@ -253,6 +253,9 @@ class Product(TestCoordinator):
     def test_clothing(self):
         self.execute('product/clothing')
 
+    def test_money_form(self):
+        self.execute('product/money_form')
+
     def test_drug(self):
         self.execute('product/drug')
 
@@ -294,6 +297,9 @@ class Product(TestCoordinator):
 
     def test_dish(self):
         self.execute('product/food/dish')
+
+    def test_art_other(self):
+        self.execute('product/art/art_other')
 
     def test_picture(self):
         self.execute('product/art/picture')
@@ -340,6 +346,9 @@ class Product(TestCoordinator):
     def test_plan(self):
         self.execute('product/doctrine_method/plan')
 
+    def test_rule_other(self):
+        self.execute('product/rule/rule_other')
+
     def test_treaty(self):
         self.execute('product/rule/treaty')
 
@@ -352,6 +361,12 @@ class Product(TestCoordinator):
     def test_national_language(self):
         self.execute('product/language/national_language')
 
+    def test_title_other(self):
+        self.execute('product/title/title_other')
+
+    def test_position_vocation(self):
+        self.execute('product/title/position_vocation')
+
     def test_unit_other(self):
         self.execute('product/unit/unit_other')
 
@@ -360,6 +375,15 @@ class Product(TestCoordinator):
 
 
 class Event(TestCoordinator):
+
+    def test_event_other(self):
+        self.execute('event/event_other')
+
+    def test_occasion_other(self):
+        self.execute('event/occasion/occasion_other')
+
+    def test_religious_festival(self):
+        self.execute('event/occasion/religious_festival')
 
     def test_game(self):
         self.execute('event/occasion/game')

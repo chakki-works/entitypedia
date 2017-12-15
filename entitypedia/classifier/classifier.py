@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 from sklearn.model_selection import train_test_split
+from keras.callbacks import TensorBoard
 
 from models import build_model
 from utils import *
@@ -24,7 +25,8 @@ if __name__ == '__main__':
                   metrics=['accuracy'])
     model.fit(x_train, y_train,
               batch_size=batch_size,
-              epochs=1,
+              epochs=3,
+              callbacks=[TensorBoard(log_dir='logs')],
               validation_data=(x_test, y_test))
 
     y_pred = model.predict(x_test, batch_size=batch_size)
