@@ -13,7 +13,7 @@ import numpy as np
 from gensim.corpora.dictionary import Dictionary
 from keras.models import load_model
 
-from entitypedia.classifier.utils import input_fn, load_dataset
+from entitypedia.classifier.utils import input_fn_predict, load_dataset
 
 
 def main(args):
@@ -21,11 +21,13 @@ def main(args):
     X = load_dataset(jsonl_file=args.dataset)
     word_dict = Dictionary.load(args.words.dic)
     model = load_model(args.model_file)
-    X = input_fn(X, word_dict)
+    X = input_fn_predict(X, word_dict)
 
     # Predict label.
     y_pred = model.predict(X, batch_size=args.batch_size)
     y_pred = np.argmax(y_pred, axis=1)
+
+    # Todo: Save y_pred and article ID.
 
 
 if __name__ == '__main__':

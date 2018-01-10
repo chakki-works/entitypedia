@@ -48,12 +48,19 @@ def load_jsonl(jsonl_file):
             yield j
 
 
-def input_fn(X, y, word_indices, label_indices, maxlen=50, unknown_word_index=1):
+def input_fn_train(X, y, word_indices, label_indices, maxlen=50, unknown_word_index=1):
     X = [word_indices.doc2idx(document=x, unknown_word_index=unknown_word_index) for x in X]
     X = pad_sequences(X, maxlen=maxlen)
     y = label_indices.doc2idx(document=y)
 
     return X, y
+
+
+def input_fn_predict(X, word_indices, maxlen=50, unknown_word_index=1):
+    X = [word_indices.doc2idx(document=x, unknown_word_index=unknown_word_index) for x in X]
+    X = pad_sequences(X, maxlen=maxlen)
+
+    return X
 
 
 def load_dataset(jsonl_file):
