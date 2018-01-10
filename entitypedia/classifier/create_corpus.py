@@ -1,9 +1,16 @@
-# -*- coding: utf-8 -*-
+"""
+Code for creating a corpus.
+"""
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import fnmatch
 import json
 import os
 
-from utils import *
+from entitypedia.classifier.utils import *
 
 SAVE_FILE = 'docs.json'
 
