@@ -18,8 +18,8 @@ from entitypedia.classifier.utils import input_fn_predict, load_dataset
 
 def main(args):
     # Load datasets, model and dictionaries.
-    X = load_dataset(jsonl_file=args.dataset)
-    word_dict = Dictionary.load(args.words.dic)
+    X, _ = load_dataset(jsonl_file=args.dataset)
+    word_dict = Dictionary.load(args.word_dic)
     model = load_model(args.model_file)
     X = input_fn_predict(X, word_dict)
 

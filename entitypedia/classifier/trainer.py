@@ -44,8 +44,8 @@ def main(args):
 
     # Save the model and dictionaries.
     model.save(args.model_file)
-    word_dict.save(args.words.dic)
-    label_dict.save(args.labels.dic)
+    word_dict.save(args.word_dic)
+    label_dict.save(args.label_dic)
 
 
 if __name__ == '__main__':
