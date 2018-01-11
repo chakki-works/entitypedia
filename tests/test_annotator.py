@@ -1,7 +1,7 @@
 import unittest
 from pprint import pprint
 
-from entitypedia.annotate_named_entity import Annotator
+from entitypedia.annotator import Annotator
 
 
 class TestAnnotator(unittest.TestCase):
