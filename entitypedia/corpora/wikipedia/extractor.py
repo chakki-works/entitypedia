@@ -96,3 +96,19 @@ def get_file_list(dir_name):
     file_list = glob.glob(os.path.join(dir_name, '**/wiki_*'), recursive=True)
 
     return file_list
+
+
+def filter_docs(docs, ids):
+    """Filter docs by ID.
+
+    Args:
+        docs: A list of doc.
+        ids: Set of wikipedia id.
+
+    Returns:
+        A list of dictionary.
+    """
+    for doc in docs:
+        if doc['id'] not in ids:
+            continue
+        yield doc
