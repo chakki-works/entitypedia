@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+Code for mapping seeds to other format.
+"""
+
+import argparse
 import csv
 import glob
 import json
@@ -6,12 +11,12 @@ import os
 import re
 from collections import defaultdict
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), '../data/raw/seeds')
-files = glob.glob(os.path.join(DATA_DIR, '**/*.csv'), recursive=True)
-word2id = {}
+
+title2id = {}
 
 
-def load_seeds():
+def load_seeds(seed_dir):
+    files = glob.glob(os.path.join(seed_dir, '**/*.csv'), recursive=True)
     d = defaultdict(list)
     for file in files:
         idx = file.index('seeds/')
@@ -20,12 +25,11 @@ def load_seeds():
             reader = csv.reader(f)
             for line in reader:
                 try:
-                    word, url, id = line[0], line[1], line[2]
-                    word2id[word] = id
-                    d[entity_type].append(word)
+                    title, url, id = line[0], line[1], line[2]
+                    title2id[title] = id
+                    d[entity_type].append(title)
                 except ValueError:
                     print('Error line is: {}'.format(line))
-    print(d.keys())
 
     return d
 
@@ -34,7 +38,7 @@ def save_seeds(seeds, file):
     with open(file, 'w') as f:
         for name, instances in seeds.items():
             for ins in instances:
-                obj = {'class': name, 'val': ins, 'id': word2id[ins]}
+                obj = {'class': name, 'val': ins, 'id': title2id[ins]}
                 f.write(json.dumps(obj))
                 f.write('\n')
 
@@ -91,10 +95,16 @@ def mappings(seeds):
     return res
 
 
-if __name__ == '__main__':
-    filename = 'seeds.jsonl'
-    seeds = load_seeds()
+def main(args):
+    seeds = load_seeds(args.seed_dir)
     seeds = mappings(seeds)
-    for name, instances in seeds.items():
-        print('{}: {}'.format(name, len(instances)))
-    save_seeds(seeds, filename)
+    save_seeds(seeds, args.save_file)
+
+
+if __name__ == '__main__':
+    DATA_DIR = os.path.join(os.path.dirname(__file__), '../../data')
+    parser = argparse.ArgumentParser(description='Mapping seeds to other format.')
+    parser.add_argument('--seed_dir', default=os.path.join(DATA_DIR, 'raw/seeds'), help='seed directory')
+    parser.add_argument('--save_file', default=os.path.join(DATA_DIR, 'interim/seeds.jsonl'), help='save file')
+    args = parser.parse_args()
+    main(args)
