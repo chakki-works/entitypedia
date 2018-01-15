@@ -109,6 +109,16 @@ def filter_docs(docs, ids):
         A list of dictionary.
     """
     for doc in docs:
-        if doc['id'] not in ids:
+        if doc['wikipedia_id'] not in ids:
             continue
         yield doc
+
+
+def create_dataset_for_classifier(doc_file, seed_file):
+    docs = load_jsonl(doc_file)
+    seeds = load_jsonl(seed_file)
+    seed_ids = {s['id']: s['class'] for s in seeds}
+    filtered_docs = filter_docs(docs, seed_ids)
+    for d in filtered_docs:
+        id = d['wikipedia_id']
+        yield {'text': d['abstract'], 'label': seed_ids[id]}
