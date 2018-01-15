@@ -52,3 +52,22 @@ class TestAnnotator(unittest.TestCase):
         for e in annotated['entities']:
             i, j = e['beginOffset'], e['endOffset']
             self.assertEqual(text[i: j], e['entity'])
+
+    def test_annotate_entity(self):
+        import os
+        from gensim.corpora.dictionary import Dictionary
+        from entitypedia.classifier.utils import load_jsonl
+        data_dir = os.path.join(os.path.dirname(__file__), '../data/interim/')
+        labels = Dictionary.load(os.path.join(data_dir, 'labels.dic'))
+        article_entity = load_jsonl(os.path.join(data_dir, 'article_entity.jsonl'))
+        abstracts = load_jsonl(os.path.join(data_dir, 'abstracts.jsonl'))
+        articles = load_jsonl(os.path.join(data_dir, '../abstracts.jsonl'))
+
+        id2ne = {d['wikipedia_id']: labels[int(d['ne_id'])] for d in article_entity}
+        title2ne = {d['title']: id2ne.get(d['id'], 'other') for d in articles}
+        annotator = Annotator(dic=title2ne)
+        from pprint import pprint
+        for i, a in enumerate(abstracts):
+            if i == 100:
+                break
+            pprint(annotator.annotate(a['abstract']))
