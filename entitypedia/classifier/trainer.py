@@ -49,9 +49,9 @@ def main(args):
 
 
 if __name__ == '__main__':
-    DATA_DIR = os.path.join(os.path.dirname(__file__), '../../data')
+    DATA_DIR = os.path.join(os.path.dirname(__file__), '../../data/interim')
     parser = argparse.ArgumentParser(description='Training a classifier')
-    parser.add_argument('--dataset', default=os.path.join(DATA_DIR, 'interim/dataset.jsonl'), help='dataset directory')
+    parser.add_argument('--dataset', default=os.path.join(DATA_DIR, 'dataset.jsonl'), help='dataset directory')
     parser.add_argument('--log_dir', default=os.path.join(DATA_DIR, 'logs'), help='log directory')
     parser.add_argument('--model_file', default=os.path.join(DATA_DIR, 'model.h5'), help='file name for model')
     parser.add_argument('--word_dic', default=os.path.join(DATA_DIR, 'words.dic'), help='word dictionary')

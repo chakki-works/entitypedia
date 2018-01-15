@@ -97,7 +97,7 @@ def load_dataset(jsonl_file):
 def load_prediction_dataset(jsonl_file):
     X, ids = [], []
     for j in load_jsonl(jsonl_file):
-        text = remove_tags(j['text'])
+        text = remove_tags(j['abstract'])
         X.append(tokenize(text))
         ids.append(j['wikipedia_id'])
 
