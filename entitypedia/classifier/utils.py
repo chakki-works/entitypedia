@@ -87,7 +87,8 @@ def input_fn_predict(X, word_indices, maxlen=50, unknown_word_index=1):
 def load_dataset(jsonl_file):
     X, y = [], []
     for j in load_jsonl(jsonl_file):
-        X.append(tokenize(j['text']))
+        text = remove_tags(j['text'])
+        X.append(tokenize(text))
         y.append(j['label'])
 
     return X, y
