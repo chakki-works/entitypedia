@@ -49,14 +49,13 @@ def main(args):
 
 
 if __name__ == '__main__':
+    DATA_DIR = os.path.join(os.path.dirname(__file__), '../../data')
     parser = argparse.ArgumentParser(description='Training a classifier')
-    parser.add_argument('--dataset', default=os.path.join(os.path.dirname(__file__),
-                                                          '../../data/filtered_abstracts.jsonl'),
-                        help='dataset directory')
-    parser.add_argument('--log_dir', default='logs', help='log directory')
-    parser.add_argument('--model_file', default='model.h5', help='file name for model')
-    parser.add_argument('--word_dic', default='words.dic', help='word dictionary')
-    parser.add_argument('--label_dic', default='labels.dic', help='label dictionary')
+    parser.add_argument('--dataset', default=os.path.join(DATA_DIR, 'interim/dataset.jsonl'), help='dataset directory')
+    parser.add_argument('--log_dir', default=os.path.join(DATA_DIR, 'logs'), help='log directory')
+    parser.add_argument('--model_file', default=os.path.join(DATA_DIR, 'model.h5'), help='file name for model')
+    parser.add_argument('--word_dic', default=os.path.join(DATA_DIR, 'words.dic'), help='word dictionary')
+    parser.add_argument('--label_dic', default=os.path.join(DATA_DIR, 'labels.dic'), help='label dictionary')
     parser.add_argument('--epochs', type=int, default=3, help='number of epochs')
     parser.add_argument('--batch_size', type=int, default=32, help='batch size')
     parser.add_argument('--test_size', type=float, default=0.3, help='batch size')

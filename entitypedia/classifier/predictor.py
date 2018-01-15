@@ -31,13 +31,12 @@ def main(args):
 
 
 if __name__ == '__main__':
+    DATA_DIR = os.path.join(os.path.dirname(__file__), '../../data')
     parser = argparse.ArgumentParser(description='Code for prediction')
-    parser.add_argument('--dataset', default=os.path.join(os.path.dirname(__file__),
-                                                          '../../data/filtered_abstracts.jsonl'),
-                        help='dataset directory')
-    parser.add_argument('--model_file', default='model.h5', help='file name for model')
-    parser.add_argument('--word_dic', default='words.dic', help='word dictionary')
-    parser.add_argument('--label_dic', default='labels.dic', help='label dictionary')
+    parser.add_argument('--dataset', default=os.path.join(DATA_DIR, 'dataset.jsonl'), help='dataset directory')
+    parser.add_argument('--model_file', default=os.path.join(DATA_DIR, 'model.h5'), help='file name for model')
+    parser.add_argument('--word_dic', default=os.path.join(DATA_DIR, 'words.dic'), help='word dictionary')
+    parser.add_argument('--label_dic', default=os.path.join(DATA_DIR, 'labels.dic'), help='label dictionary')
     parser.add_argument('--batch_size', type=int, default=32, help='batch size')
     args = parser.parse_args()
     main(args)
