@@ -94,6 +94,16 @@ def load_dataset(jsonl_file):
     return X, y
 
 
+def load_prediction_dataset(jsonl_file):
+    X, ids = [], []
+    for j in load_jsonl(jsonl_file):
+        text = remove_tags(j['text'])
+        X.append(tokenize(text))
+        ids.append(j['wikipedia_id'])
+
+    return X, ids
+
+
 def create_dictionary(documents, padding_word_index=None, unknown_word_index=None):
     d = Dictionary(documents)
     # Todo
