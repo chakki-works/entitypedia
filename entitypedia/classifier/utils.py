@@ -11,6 +11,7 @@ import json
 import MeCab
 from gensim.corpora.dictionary import Dictionary
 from keras.preprocessing.sequence import pad_sequences
+from bs4 import BeautifulSoup
 t = MeCab.Tagger('-Owakati')
 PAD = '<PAD>'
 UNK = '<UNK>'
@@ -46,6 +47,26 @@ def load_jsonl(jsonl_file):
         for line in f:
             j = json.loads(line)
             yield j
+
+
+def remove_tags(html):
+    """Remove all html tags.
+
+    Args:
+        html: html string.
+
+    Returns:
+        cleaned text.
+
+    Example:
+        >>> html = 'hoge<a href="fuga">bar</a>buzz'
+        >>> remove_tags(html)
+        hogebarbuzz
+    """
+    soup = BeautifulSoup(html, 'html.parser')
+    text = soup.get_text()
+
+    return text
 
 
 def input_fn_train(X, y, word_indices, label_indices, maxlen=50, unknown_word_index=1):
