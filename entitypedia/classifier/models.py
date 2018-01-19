@@ -18,3 +18,11 @@ def build_model(vocab_sz, num_labels, emb_sz=128, dropout=0.2):
     model.add(Dense(num_labels, activation='softmax'))
 
     return model
+
+
+def build_ffnn(vocab_sz, num_labels, dim=100):
+    model = Sequential()
+    model.add(Dense(dim, input_shape=(vocab_sz, ), activation='relu'))
+    model.add(Dense(num_labels, activation='softmax'))
+
+    return model
