@@ -25,14 +25,60 @@ def input_fn_train(X, y, word_indices, label_indices):
     return X, y
 
 
+def batch_iter(data, labels, batch_size, preprocessor=None):
+    num_batches_per_epoch = int((len(data) - 1) / batch_size) + 1
+
+    def data_generator():
+        """
+        Generates a batch iterator for a dataset.
+        """
+        data_size = len(data)
+        while True:
+            shuffle_indices = np.random.permutation(np.arange(data_size))
+
+            for batch_num in range(num_batches_per_epoch):
+                start_index = batch_num * batch_size
+                end_index = min((batch_num + 1) * batch_size, data_size)
+                indices = shuffle_indices[start_index: end_index]
+                X, y = [data[i] for i in indices], [labels[i] for i in indices]
+
+                yield preprocessor.transform(X, y)
+
+    return num_batches_per_epoch, data_generator()
+
+
+class Preprocessor(object):
+
+    def __init__(self, word_dict, label_dict):
+        self.word_dict = word_dict
+        self.label_dict = label_dict
+
+    def transform(self, X, y):
+        res_X = np.zeros((len(X), len(self.word_dict)))
+        res_y = np.zeros((len(y), ))
+        for i, x in enumerate(X):
+            for v in x:
+                j = self.word_dict.get(v, 1)
+                res_X[i][j] += 1
+
+        for i, v in enumerate(y):
+            res_y[i] = self.label_dict.get(v, 1)
+
+        return res_X, res_y
+
+
 def main(args):
     print('Loading dataset...')
     X, y = load_dataset(jsonl_file=args.dataset)
-    word_dict = create_dictionary(X, padding_word_index=0, unknown_word_index=1)
+    word_dict = create_dictionary(X, padding_word_index=0, unknown_word_index=1, prune_at=10000)
     label_dict = create_dictionary([y])
-    X, y = input_fn_train(X, y, word_dict, label_dict)
-    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=args.test_size, random_state=42)
+    p = Preprocessor(word_dict, label_dict)
     print('Vocabulary: {}'.format(len(word_dict)))
+
+    print('Transforming dataset...')
+    x_train, x_valid, y_train, y_valid = train_test_split(X, y, test_size=args.test_size, random_state=42)
+    train_steps, train_batches = batch_iter(x_train, y_train, args.batch_size, preprocessor=p)
+    valid_steps, valid_batches = batch_iter(x_valid, y_valid, args.batch_size, preprocessor=p)
 
     print('Building the model...')
     model = build_ffnn(len(word_dict), len(label_dict))
@@ -41,14 +87,17 @@ def main(args):
                   metrics=['accuracy'])
 
     print('Training...')
-    model.fit(x_train, y_train, batch_size=args.batch_size, epochs=args.epochs,
-              callbacks=[TensorBoard(log_dir=args.log_dir)],
-              validation_data=(x_test, y_test))
+    model.fit_generator(generator=train_batches,
+                        steps_per_epoch=train_steps,
+                        validation_data=valid_batches,
+                        validation_steps=valid_steps,
+                        epochs=args.epochs,
+                        callbacks=[TensorBoard(log_dir=args.log_dir)])
 
     print('Evaluating...')
-    y_pred = model.predict(x_test, batch_size=args.batch_size)
+    y_pred = model.predict(x_valid, batch_size=args.batch_size)
     y_pred = np.argmax(y_pred, axis=1)
-    print(classification_report(y_test, y_pred, target_names=label_dict.values()))
+    print(classification_report(y_valid, y_pred, target_names=label_dict.values()))
 
 
 if __name__ == '__main__':

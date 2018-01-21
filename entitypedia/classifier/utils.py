@@ -104,8 +104,11 @@ def load_prediction_dataset(jsonl_file):
     return X, ids
 
 
-def create_dictionary(documents, padding_word_index=None, unknown_word_index=None):
-    d = Dictionary(documents)
+def create_dictionary(documents, padding_word_index=None, unknown_word_index=None, prune_at=None):
+    if prune_at:
+        d = Dictionary(documents, prune_at=prune_at)
+    else:
+        d = Dictionary(documents)
     # Todo
     if padding_word_index:
         d.token2id = dict((k, v + 1) for k, v in d.token2id.items())
