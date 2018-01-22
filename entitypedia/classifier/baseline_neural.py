@@ -54,15 +54,13 @@ class Preprocessor(object):
         self.label_dict = label_dict
 
     def transform(self, X, y):
-        res_X = np.zeros((len(X), len(self.word_dict)))
-        res_y = np.zeros((len(y), ))
+        res_X = np.zeros((len(X), len(self.word_dict)), dtype=np.int32)
         for i, x in enumerate(X):
             for v in x:
                 j = self.word_dict.get(v, 1)
                 res_X[i][j] += 1
 
-        for i, v in enumerate(y):
-            res_y[i] = self.label_dict.get(v, 1)
+        res_y = np.asarray(self.label_dict.doc2idx(y), dtype=np.int32)
 
         return res_X, res_y
 
