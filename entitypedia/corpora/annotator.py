@@ -39,6 +39,25 @@ class Annotator(object):
         return res
 
     def to_bio(self, html):
+        """Converts annotated text into BIO format.
+
+        Args:
+            html: html text.
+
+        Return:
+            tuple: a text and tags.
+
+        Example:
+            >>> html = '<a href="google">Google</a>'
+            >>> to_bio(html)
+            ('Google',
+            ['B-Organization',
+            'I-Organization',
+            'I-Organization',
+            'I-Organization',
+            'I-Organization',
+            'I-Organization']
+        """
         res = self.annotate(html)
         text = res['text']
         entities = res['entities']
