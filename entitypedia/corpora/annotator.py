@@ -38,6 +38,24 @@ class Annotator(object):
 
         return res
 
+    def to_bio(self, html):
+        res = self.annotate(html)
+        text = res['text']
+        entities = res['entities']
+        tags = self._get_bio_tags(len(text), entities)
+        return text, tags
+
+    def _get_bio_tags(self, length, entities):
+        tags = ['O'] * length
+        for entity in entities:
+            begin_offset, end_offset = entity['beginOffset'], entity['endOffset']
+            entity_type = entity['type']
+            for i in range(begin_offset, end_offset):
+                tags[i] = 'I-{}'.format(entity_type)
+            tags[begin_offset] = 'B-{}'.format(entity_type)
+
+        return tags
+
     def _get_link_pos(self, html):
         """Gets link positions in html.
 
