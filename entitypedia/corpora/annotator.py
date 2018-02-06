@@ -11,7 +11,8 @@ class Annotator(object):
     """
 
     def __init__(self, dic):
-        self._regex_link = re.compile(r'<a href="(.+?)">(.+?)</a>')
+        self._regex_link = re.compile(r'<a href="(.+?)">(.*?)</a>')
+        # self._noise_ptn = re.compile(r'<br/?>|<ref.+?>(.*?)</ref>|<ce>(.*?)</ce>|<ruby.+?>(.*?)</ruby>|<nowiki.+?>(.*?)</nowiki>|<a href="(.+?)"></a>')
         self._dic = dic
 
     def annotate(self, html):
@@ -29,6 +30,7 @@ class Annotator(object):
         """
         assert isinstance(html, str)
 
+        # html = self._remove_noise(html)
         links = self._extract_anchor_text(html)
         spans = self._get_link_pos(html)
         spans = self._correct_spans(spans, links)
@@ -37,6 +39,9 @@ class Annotator(object):
         res = self._build_response(clean_text, spans, entity_types)
 
         return res
+
+    def _remove_noise(self, html):
+        return self._noise_ptn.sub('', html)
 
     def to_bio(self, html):
         """Converts annotated text into BIO format.
@@ -61,11 +66,11 @@ class Annotator(object):
         res = self.annotate(html)
         text = res['text']
         entities = res['entities']
-        tags = self._get_bio_tags(len(text), entities)
+        tags = self._get_bio_tags(text, entities)
         return text, tags
 
-    def _get_bio_tags(self, length, entities):
-        tags = ['O'] * length
+    def _get_bio_tags(self, text, entities):
+        tags = ['O'] * len(text)
         for entity in entities:
             begin_offset, end_offset = entity['beginOffset'], entity['endOffset']
             entity_type = entity['type']
