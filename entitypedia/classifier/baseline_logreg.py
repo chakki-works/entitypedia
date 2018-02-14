@@ -68,11 +68,9 @@ def main(args):
 if __name__ == '__main__':
     DATA_DIR = os.path.join(os.path.dirname(__file__), '../../data/interim')
     parser = argparse.ArgumentParser(description='Training a classifier')
-    parser.add_argument('--dataset', default=os.path.join(DATA_DIR, 'dataset1.jsonl'), help='dataset directory')
+    parser.add_argument('--dataset', default=os.path.join(DATA_DIR, 'dataset.jsonl'), help='dataset directory')
     parser.add_argument('--pred_data', default=os.path.join(DATA_DIR, 'abstracts.jsonl'), help='dataset directory')
     parser.add_argument('--save_file', default=os.path.join(DATA_DIR, 'article_entity.jsonl'), help='save file')
-    parser.add_argument('--model_file', default=os.path.join(DATA_DIR, 'model.h5'), help='file name for model')
-    parser.add_argument('--word_dic', default=os.path.join(DATA_DIR, 'words.dic'), help='word dictionary')
     parser.add_argument('--label_dic', default=os.path.join(DATA_DIR, 'labels.dic'), help='label dictionary')
     args = parser.parse_args()
     main(args)
