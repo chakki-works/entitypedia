@@ -81,6 +81,19 @@ class TestAnnotator(unittest.TestCase):
                 break
             pprint(annotator.annotate(a['abstract']))
 
+    def test_create_dictionary(self):
+        data_dir = os.path.join(os.path.dirname(__file__), '../data/interim/')
+        labels = Dictionary.load(os.path.join(data_dir, 'labels.dic'))
+        article_entity = load_jsonl(os.path.join(data_dir, 'article_entity.jsonl'))
+        abstracts = load_jsonl(os.path.join(data_dir, 'abstracts.jsonl'))
+        articles = load_jsonl(os.path.join(data_dir, '../abstracts.jsonl'))
+
+        id2ne = {d['wikipedia_id']: labels[int(d['ne_id'])] for d in article_entity}
+        title2ne = [{d['title']: id2ne.get(d['id'], 'other')} for d in articles]
+        from entitypedia.corpora.wikipedia.extractor import save_jsonl
+        save_file = os.path.join(data_dir, 'title_entity.jsonl')
+        save_jsonl(title2ne, save_file)
+
     def test_bio(self):
         data_dir = os.path.join(os.path.dirname(__file__), '../data/interim/')
         labels = Dictionary.load(os.path.join(data_dir, 'labels.dic'))
