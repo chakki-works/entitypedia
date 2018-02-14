@@ -1,0 +1,69 @@
+<html>
+<head>
+	<title>namaco Demo</title>
+	<meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="MobileOptimized" content="320">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ static_url('base.css') }}" />
+
+</head>
+<body>
+
+<div id="app" class="container">
+	<div class="content-area">
+		<div class="columns">
+			<div class="column is-two-thirds">
+				<div class="content">
+					<div class="field">
+						<label class="label">Sentence</label>
+						<div class="control">
+							<form action="/" method="post">
+								<textarea id="sentence" name="sentence" class="textarea" placeholder="Textarea"></textarea>
+								<!--<input type="submit" id="submit" display:none"/>-->
+							</form>
+						</div>
+					</div>
+					<a id="submit" class="button is-primary">Analyze</a>
+				</div>
+
+				<label class="label">Named Entities</label>
+				<div class="example">
+					<div class="content">
+						<p>
+							<small class="axlabel organization">Organization</small>
+							<small class="axlabel location">Location</small>
+							<small class="axlabel person">Person</small>
+							<small class="axlabel time">Time</small>
+							<small class="axlabel color">color</small>
+							<small class="axlabel artifact">Product</small>
+							<small class="axlabel disease">Disease</small>
+							<small class="axlabel event">Event</small>
+							<small class="axlabel facility">Facility</small>
+							<small class="axlabel natural-object">NaturalObject</small>
+						</p>
+					</div>
+
+					<article class="message">
+						<div class="message-body">
+							{{ sent }}
+						</div>
+					</article>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--<script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>-->
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous">
+</script>
+<script type="text/javascript" src="{{ static_url('script.js') }}" /></script>
+</body>
+</html>
