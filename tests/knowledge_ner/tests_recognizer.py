@@ -3,18 +3,26 @@ import os
 import unittest
 from pprint import pprint
 
-from knowledge_ner.recognizer import KnowledgeBaseRecognizer
-from knowledge_ner.reader import read_csv
+from entitypedia.knowledge_ner.recognizer import KnowledgeBaseRecognizer
+from entitypedia.knowledge_ner.reader import read_csv
+from entitypedia.corpora.wikipedia.extractor import load_jsonl
 
 
 class TestRecognizer(unittest.TestCase):
 
     def setUp(self):
         self.recognizer = KnowledgeBaseRecognizer()
-        self.sample_data = os.path.join(os.path.dirname(__file__), 'data/sample.csv')
+        # self.sample_data = os.path.join(os.path.dirname(__file__), 'data/sample.csv')
         # add entity to recognizer
-        for entity, label in read_csv(self.sample_data):
+        # for entity, label in read_csv(self.sample_data):
+        #    self.recognizer.add_entity(entity, label)
+        file = os.path.join(os.path.dirname(__file__), '../../data/interim/title_entity.jsonl')
+        for d in load_jsonl(file):
+            entity, label = list(d.items())[0]
+            sub_type = label.split('/')[-1]
+            label = label.split('/')[0]
             self.recognizer.add_entity(entity, label)
+            self.recognizer.add_word(entity, sub_type, page_url='', image_url='')
 
     def test_add_entity(self):
         for entity, label in read_csv(self.sample_data):
