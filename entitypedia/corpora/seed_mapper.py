@@ -97,7 +97,7 @@ def mappings(seeds):
 
 def main(args):
     seeds = load_seeds(args.seed_dir)
-    seeds = mappings(seeds)
+    # seeds = mappings(seeds)
     save_seeds(seeds, args.save_file)
 
 
