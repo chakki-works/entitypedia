@@ -46,7 +46,8 @@ class KnowledgeBaseRecognizer(object):
         for chunk_start, chunk_end, entity in chunks:
             for i in range(chunk_start, chunk_end):
                 prefix = 'B' if i == chunk_start else 'I'
-                type_ = self._labels[entity]
+                # type_ = self._labels[entity]
+                type_ = self._entity2detail[entity]['sub_type']
                 res[i] = '{}-{}'.format(prefix, type_)
 
         return res
@@ -59,14 +60,14 @@ class KnowledgeBaseRecognizer(object):
 
     def _filter_chunks(self, chunks):
         chunks = sorted(chunks)
-        print(chunks)
+        # print(chunks)
         # 開始位置が同じなら最も長い単語を残す
         dic = defaultdict(list)
         for chunk in chunks:
             start_idx = chunk[0]
             dic[start_idx].append(chunk)
         chunks = sorted(max(ls) for ls in dic.values())
-        print(chunks)
+        # print(chunks)
 
         max_idx = 0
         for start_idx, end_idx, w in chunks:
