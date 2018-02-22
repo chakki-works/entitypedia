@@ -6,6 +6,18 @@ class Annotator(object):
     Annotates named-entity tag with Wikipedia text.
     """
 
+    def __init__(self):
+        self.remove_list = {'volume', 'period_date', 'percent', 'url', 'service', 'multiplication',
+                            'n_person', 'school_age', 'seismic_intensity', 'period_month',
+                            'phone_number', 'rank', 'n_animal', 'countx_other', 'point',
+                            'periodx_other', 'calorie', 'space', 'period_time', 'n_country',
+                            'n_product', 'numex_other', 'latitude_longtitude', 'id_number',
+                            'n_flora', 'facility_part', 'temperature', 'weight', 'age', 'water_root',
+                            'n_natural_object_other', 'intensity', 'time', 'n_facility',
+                            'n_organization', 'postal_address', 'period_year', 'ordinal_number',
+                            'physical_extent', 'speed', 'measurement_other', 'seismic_magnitude',
+                            'n_event', 'period_week', 'frequency', 'ignored', 'stock', 'n_location_other'}
+
     def extract(self, i, doc, tags):
         tag = []
         while doc[i] != '>':
@@ -78,6 +90,8 @@ class Annotator(object):
         for entity in entities:
             begin_offset, end_offset = entity['beginOffset'], entity['endOffset']
             entity_type = entity['type']
+            if entity_type in self.remove_list:
+                continue
             for i in range(begin_offset, end_offset):
                 tags[i] = 'I-{}'.format(entity_type)
             tags[begin_offset] = 'B-{}'.format(entity_type)
