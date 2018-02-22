@@ -34,6 +34,23 @@ class KnowledgeBaseRecognizer(object):
 
         return res
 
+    def iob2(self, sent):
+        chunks = self._get_chunks(sent)
+        chunks = self._filter_chunks(chunks)
+        res = self._build_iob2(chunks, length=len(sent))
+
+        return res
+
+    def _build_iob2(self, chunks, length):
+        res = ['O'] * length
+        for chunk_start, chunk_end, entity in chunks:
+            for i in range(chunk_start, chunk_end):
+                prefix = 'B' if i == chunk_start else 'I'
+                type_ = self._labels[entity]
+                res[i] = '{}-{}'.format(prefix, type_)
+
+        return res
+
     def _get_chunks(self, sent):
         for idx, (_, w) in self._dictionary.iter(sent):
             end_idx = idx + 1

@@ -41,3 +41,9 @@ class TestRecognizer(unittest.TestCase):
         text = '2007年に安倍晋三首相が日本銀行を訪問した。'
         res = self.recognizer.analyze(text)
         pprint(res)
+
+    def test_iob2(self):
+        self.recognizer.build()
+        text = '2007年に安倍晋三首相が日本銀行を訪問した。'
+        res = self.recognizer.iob2(text)
+        pprint(res)
