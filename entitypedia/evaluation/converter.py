@@ -22,8 +22,8 @@ def load_text(file_names, encoding):
             yield text
 
 
-def to_iob2(dir):
-    a = Annotator()
+def to_iob2(dir, remove_types={}):
+    a = Annotator(remove_types)
     file_names = glob.glob(os.path.join(dir, '*.sgml'))
     docs = load_text(file_names, encoding='shift_jis')
     X, y = [], []
