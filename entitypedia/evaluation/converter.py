@@ -35,6 +35,19 @@ def to_iob2(dir, remove_types={}):
     return X, y
 
 
+def xml_to_iob2(dir, remove_types={}):
+    a = Annotator(remove_types)
+    file_names = glob.glob(os.path.join(dir, '**/*.xml'))
+    docs = load_text(file_names, encoding='utf-8')
+    X, y = [], []
+    for doc in docs:
+        text, tags = a.to_bio(doc)
+        X.append(text)
+        y.append(tags)
+
+    return X, y
+
+
 if __name__ == '__main__':
     BASE_DIR = os.path.join(os.path.dirname(__file__), '../../data/raw/corpora')
     mainichi_dir = os.path.join(BASE_DIR, 'mainichi')
