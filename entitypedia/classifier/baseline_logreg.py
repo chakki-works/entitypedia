@@ -7,10 +7,12 @@ from __future__ import division
 from __future__ import print_function
 
 import argparse
+import csv
 import os
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
 
 from entitypedia.classifier.utils import tokenize, load_jsonl, remove_tags, create_dictionary
 from entitypedia.corpora.wikipedia.extractor import save_jsonl
@@ -26,14 +28,24 @@ def load_dataset(jsonl_file):
     return X, y
 
 
-def load_prediction_dataset(jsonl_file):
+def load_prediction_dataset(jsonl_file, remove_ids):
     X, ids = [], []
     for j in load_jsonl(jsonl_file):
         text = remove_tags(j['abstract'])
+        id = j['wikipedia_id']
+        if id in remove_ids:
+            continue
         X.append(text)
-        ids.append(j['wikipedia_id'])
+        ids.append(id)
 
     return X, ids
+
+
+def load_disambig_ids(file_path):
+    with open(file_path) as f:
+        ids = {line.strip() for line in f}
+
+    return ids
 
 
 def main(args):
@@ -47,11 +59,13 @@ def main(args):
     X = vectorizer.fit_transform(X)
 
     print('Fitting...')
-    clf = LogisticRegression(penalty='l1', n_jobs=-1)
+    # clf = LogisticRegression(penalty='l1', n_jobs=-1)
+    clf = LinearSVC()
     clf.fit(X, y)
 
     print('Loading dataset for prediction...')
-    X, ids = load_prediction_dataset(jsonl_file=args.pred_data)
+    disambig_ids = load_disambig_ids(args.disambig_file)
+    X, ids = load_prediction_dataset(args.pred_data, disambig_ids)
 
     print('Vectorizing...')
     X = vectorizer.transform(X)
@@ -72,5 +86,6 @@ if __name__ == '__main__':
     parser.add_argument('--pred_data', default=os.path.join(DATA_DIR, 'abstracts.jsonl'), help='dataset directory')
     parser.add_argument('--save_file', default=os.path.join(DATA_DIR, 'article_entity.jsonl'), help='save file')
     parser.add_argument('--label_dic', default=os.path.join(DATA_DIR, 'labels.dic'), help='label dictionary')
+    parser.add_argument('--disambig_file', default=os.path.join(DATA_DIR, 'disambig_id.csv'), help='disambiguation ids')
     args = parser.parse_args()
     main(args)
