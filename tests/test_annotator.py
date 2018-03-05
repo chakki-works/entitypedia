@@ -87,9 +87,11 @@ class TestAnnotator(unittest.TestCase):
         article_entity = load_jsonl(os.path.join(data_dir, 'article_entity.jsonl'))
         abstracts = load_jsonl(os.path.join(data_dir, 'abstracts.jsonl'))
         articles = load_jsonl(os.path.join(data_dir, '../abstracts.jsonl'))
+        from entitypedia.classifier.baseline_logreg import load_disambig_ids
+        disambig_ids = load_disambig_ids(os.path.join(data_dir, 'disambig_id.csv'))
 
         id2ne = {d['wikipedia_id']: labels[int(d['ne_id'])] for d in article_entity}
-        title2ne = [{d['title']: id2ne.get(d['id'], 'other')} for d in articles]
+        title2ne = [{d['title']: id2ne.get(d['id'], 'other')} for d in articles if d['id'] not in disambig_ids]
         from entitypedia.corpora.wikipedia.extractor import save_jsonl
         save_file = os.path.join(data_dir, 'title_entity.jsonl')
         save_jsonl(title2ne, save_file)

@@ -28,7 +28,17 @@ class TestPerformance(unittest.TestCase):
         self.bccwj_dir = os.path.join(BASE_DIR, 'bccwj')
 
     def test_f1_score(self):
-        X_true, y_true = to_iob2(self.mainichi_dir)
+        remove_types = {'volume', 'period_date', 'percent', 'url', 'service', 'multiplication',
+                        'n_person', 'school_age', 'seismic_intensity', 'period_month',
+                        'phone_number', 'rank', 'n_animal', 'countx_other', 'point',
+                        'periodx_other', 'calorie', 'space', 'period_time', 'n_country',
+                        'n_product', 'numex_other', 'latitude_longtitude', 'id_number',
+                        'n_flora', 'facility_part', 'temperature', 'weight', 'age', 'water_root',
+                        'n_natural_object_other', 'intensity', 'time', 'n_facility',
+                        'n_organization', 'postal_address', 'period_year', 'ordinal_number',
+                        'physical_extent', 'speed', 'measurement_other', 'seismic_magnitude',
+                        'n_event', 'period_week', 'frequency', 'ignored', 'stock', 'n_location_other'}
+        X_true, y_true = to_iob2(self.mainichi_dir, remove_types)
         y_pred = [self.recognizer.iob2(text) for text in X_true]
         print(classification_report(y_true, y_pred))
         print(f1_score(y_true, y_pred))
