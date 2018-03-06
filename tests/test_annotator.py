@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import unittest
 from pprint import pprint
@@ -81,7 +82,17 @@ class TestAnnotator(unittest.TestCase):
                 break
             pprint(annotator.annotate(a['abstract']))
 
+    def load_concept(self, file):
+        import csv
+        with open(file) as f:
+            reader = csv.reader(f)
+            ids = {row[2] for row in reader}
+        return ids
+
     def test_create_dictionary(self):
+        """
+        固有表現認識用の辞書を作成する
+        """
         data_dir = os.path.join(os.path.dirname(__file__), '../data/interim/')
         labels = Dictionary.load(os.path.join(data_dir, 'labels.dic'))
         article_entity = load_jsonl(os.path.join(data_dir, 'article_entity.jsonl'))
@@ -89,9 +100,11 @@ class TestAnnotator(unittest.TestCase):
         articles = load_jsonl(os.path.join(data_dir, '../abstracts.jsonl'))
         from entitypedia.classifier.baseline_logreg import load_disambig_ids
         disambig_ids = load_disambig_ids(os.path.join(data_dir, 'disambig_id.csv'))
+        concept_ids = self.load_concept(os.path.join(os.path.dirname(__file__), '../data/raw/seeds/concept.csv'))
+        remove_ids = disambig_ids | concept_ids
 
         id2ne = {d['wikipedia_id']: labels[int(d['ne_id'])] for d in article_entity}
-        title2ne = [{d['title']: id2ne.get(d['id'], 'other')} for d in articles if d['id'] not in disambig_ids]
+        title2ne = [{d['title']: id2ne.get(d['id'], 'other')} for d in articles if d['id'] not in remove_ids]
         from entitypedia.corpora.wikipedia.extractor import save_jsonl
         save_file = os.path.join(data_dir, 'title_entity.jsonl')
         save_jsonl(title2ne, save_file)
