@@ -480,3 +480,9 @@ class Timex(TestCoordinator):
 
     def test_era(self):
         self.execute('timex/era')
+
+
+class Concept(TestCoordinator):
+
+    def test_concept(self):
+        self.execute('concept')
