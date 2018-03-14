@@ -3,7 +3,7 @@ import unittest
 
 from entitypedia.corpora.wikipedia.extractor import extract_abstracts, extract_paragraphs
 from entitypedia.corpora.wikipedia.extractor import get_file_list, save_jsonl
-from entitypedia.corpora.wikipedia.extractor import create_dataset_for_classifier
+from entitypedia.corpora.wikipedia.extractor import create_dataset_for_classifier, extract_categories
 
 
 class TestExtractor(unittest.TestCase):
@@ -29,3 +29,9 @@ class TestExtractor(unittest.TestCase):
         dataset_file = os.path.join(self.save_dir, 'dataset.jsonl')
         docs = create_dataset_for_classifier(abstract_file, seed_file)
         save_jsonl(docs, dataset_file)
+
+    def test_extract_categories(self):
+        categories = ['007のキャラクター', '.338ラプアマグナム銃', '****年のラジオ番組_(日本)', '1920年生']
+        true_categories = ['キャラクター', '銃', '番組', '0年生']
+        pred_categories = extract_categories(categories)
+        self.assertEqual(pred_categories, true_categories)

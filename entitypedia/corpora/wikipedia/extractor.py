@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Code for extracting text from WikiExtractor's output.
 """
@@ -9,8 +10,9 @@ from __future__ import print_function
 import glob
 import json
 import os
+import re
 
-from entitypedia.classifier.utils import load_jsonl
+from entitypedia.classifier.utils import load_jsonl, tokenize
 
 
 def extract_paragraph(text):
@@ -122,3 +124,18 @@ def create_dataset_for_classifier(doc_file, seed_file):
     for d in filtered_docs:
         id = d['wikipedia_id']
         yield {'text': d['abstract'], 'label': seed_ids[id]}
+
+
+def extract_categories(categories):
+    res = []
+    pattern = re.compile(r'\d')
+    ptn_year = re.compile(r'\d+年')
+    ptn_pare = re.compile(r'_\(.+\)')
+    for category in categories:
+        category = pattern.sub('0', category)
+        category = ptn_year.sub('0年', category)
+        category = ptn_pare.sub('', category)
+        words = tokenize(category)
+        res.append(words[-1])
+
+    return res
