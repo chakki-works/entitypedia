@@ -123,7 +123,7 @@ def create_dataset_for_classifier(doc_file, seed_file):
     filtered_docs = filter_docs(docs, seed_ids)
     for d in filtered_docs:
         id = d['wikipedia_id']
-        yield {'text': d['abstract'], 'label': seed_ids[id]}
+        yield {'text': d['abstract'], 'label': seed_ids[id], 'id': id}
 
 
 def extract_categories(categories):
