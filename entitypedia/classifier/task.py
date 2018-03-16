@@ -15,6 +15,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.svm import LinearSVC
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, f1_score
+from sklearn.preprocessing import StandardScaler, Normalizer
 from scipy.sparse import hstack
 
 from entitypedia.classifier.utils import tokenize, load_jsonl, remove_tags, create_dictionary
@@ -34,8 +35,9 @@ def load_dataset(jsonl_file, categories):
     return X, cats, y
 
 
-def load_prediction_dataset(jsonl_file, remove_ids):
+def load_prediction_dataset(jsonl_file, remove_ids, categories):
     X, ids = [], []
+    cats = []
     for j in load_jsonl(jsonl_file):
         text = remove_tags(j['abstract'])
         id = j['wikipedia_id']
@@ -43,8 +45,9 @@ def load_prediction_dataset(jsonl_file, remove_ids):
             continue
         X.append(text)
         ids.append(id)
+        cats.append(' '.join(categories[id]))
 
-    return X, ids
+    return X, cats, ids
 
 
 def load_disambig_ids(file_path):
@@ -83,27 +86,29 @@ def main(args):
     cats = category_vectorizer.fit_transform(cats)
     X = hstack([X, cats])
 
-    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+    # x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
     print('Fitting...')
     clf = LinearSVC()
     clf.fit(X, y)
+    # clf.fit(x_train, y_train)
 
-    print('Predicting...')
-    y_pred = clf.predict(x_test)
+    # print('Predicting...')
+    # y_pred = clf.predict(x_test)
 
-    print('Evaluating...')
-    print(f1_score(y_test, y_pred, average='micro'))
-    print(f1_score(y_test, y_pred, average='macro'))
-    print(classification_report(y_test, y_pred, digits=3))
+    # print('Evaluating...')
+    # print(f1_score(y_test, y_pred, average='micro'))
+    # print(f1_score(y_test, y_pred, average='macro'))
+    # print(classification_report(y_test, y_pred, digits=3))
 
-    """
     print('Loading dataset for prediction...')
     disambig_ids = load_disambig_ids(args.disambig_file)
-    X, ids = load_prediction_dataset(args.pred_data, disambig_ids)
+    X, cats, ids = load_prediction_dataset(args.pred_data, disambig_ids, categories)
 
     print('Vectorizing...')
     X = vectorizer.transform(X)
+    cats = category_vectorizer.transform(cats)
+    X = hstack([X, cats])
 
     print('Predicting...')
     y_pred = clf.predict(X)
@@ -112,7 +117,6 @@ def main(args):
     outputs = [{'wikipedia_id': id, 'ne_id': str(ne_id)} for id, ne_id in zip(ids, y_pred)]
     save_jsonl(outputs, args.save_file)
     label_dict.save(args.label_dic)
-    """
 
 
 if __name__ == '__main__':

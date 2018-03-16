@@ -104,7 +104,8 @@ class TestAnnotator(unittest.TestCase):
         remove_ids = disambig_ids | concept_ids
 
         id2ne = {d['wikipedia_id']: labels[int(d['ne_id'])] for d in article_entity}
-        title2ne = [{d['title']: id2ne.get(d['id'], 'other')} for d in articles if d['id'] not in remove_ids]
+        title2ne = [{d['title']: id2ne[d['id']]} for d in articles
+                    if d['id'] not in remove_ids and id2ne.get(d['id']) != 'concept' and d['id'] in id2ne]
         from entitypedia.corpora.wikipedia.extractor import save_jsonl
         save_file = os.path.join(data_dir, 'title_entity.jsonl')
         save_jsonl(title2ne, save_file)
@@ -135,3 +136,13 @@ class TestAnnotator(unittest.TestCase):
             f.write('\n')
         f.close()
         print('{} / {}'.format(error, total))
+
+    def test_concept(self):
+        data_dir = os.path.join(os.path.dirname(__file__), '../data/interim/')
+        labels = Dictionary.load(os.path.join(data_dir, 'labels.dic'))
+        article_entity = load_jsonl(os.path.join(data_dir, 'article_entity.jsonl'))
+        articles = load_jsonl(os.path.join(data_dir, '../abstracts.jsonl'))
+        id2ne = {d['wikipedia_id']: labels[int(d['ne_id'])] for d in article_entity}
+        concept = [d['title'] for d in articles if id2ne.get(d['id']) == 'concept']
+        for word in concept:
+            print(word)
