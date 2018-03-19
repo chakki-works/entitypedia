@@ -5,7 +5,7 @@ from seqeval.metrics import f1_score, classification_report, accuracy_score
 
 from entitypedia.evaluation.converter import to_iob2
 from entitypedia.knowledge_ner.recognizer import KnowledgeBaseRecognizer
-from entitypedia.corpora.wikipedia.extractor import load_jsonl
+from entitypedia.corpora.datasets import load_jsonl
 
 
 class TestPerformance(unittest.TestCase):

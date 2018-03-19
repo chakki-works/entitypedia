@@ -11,9 +11,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, f1_score
 from scipy.sparse import hstack
 
-from entitypedia.classifier.utils import tokenize, remove_tags, create_dictionary
-from entitypedia.corpora.wikipedia.extractor import save_jsonl, extract_categories, extract_abstract
-from entitypedia.corpora.datasets import DocumentClassifierDataset, load_disambig_ids
+from entitypedia.classifier.preprocess import extract_abstract, tokenize, remove_tags, create_dictionary, \
+    extract_categories
+from entitypedia.corpora.datasets import DocumentClassifierDataset, load_disambig_ids, save_jsonl
 
 
 def load_dataset(wiki_dir, seed_dir, categories):

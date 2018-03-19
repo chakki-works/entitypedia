@@ -6,14 +6,14 @@ Create datasets.
 import argparse
 import csv
 import glob
+import json
 import os
 import re
 from collections import namedtuple, defaultdict
 
 from gensim.corpora.dictionary import Dictionary
 
-from entitypedia.corpora.wikipedia.extractor import load_jsonl, save_jsonl
-from entitypedia.classifier.utils import tokenize
+from entitypedia.classifier.preprocess import tokenize
 from entitypedia.corpora.annotator import Annotator
 
 
@@ -200,6 +200,37 @@ def load_disambig_ids(file_path):
         ids = {line.strip() for line in f}
 
     return ids
+
+
+def save_jsonl(objs, file_name):
+    """Save objs into a jsonl file.
+
+    Args:
+        objs: iterator object.
+        file_name: a jsonl file.
+
+    Raises:
+        TypeError: if `objs' is not iterable.
+    """
+    with open(file_name, 'w') as f:
+        for obj in objs:
+            json.dump(obj, f)
+            f.write('\n')
+
+
+def load_jsonl(jsonl_file):
+    """Loads a jsonl file.
+    Args:
+        jsonl_file: a jsonl file.
+    Returns:
+        a dictionary.
+    Raises:
+        json.decoder.JSONDecodeError: if `jsonl_file' is not jsonl format.
+    """
+    with open(jsonl_file) as f:
+        for line in f:
+            j = json.loads(line)
+            yield j
 
 
 if __name__ == '__main__':

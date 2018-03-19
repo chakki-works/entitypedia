@@ -1,6 +1,6 @@
 import unittest
 
-from entitypedia.classifier.utils import remove_tags
+from entitypedia.classifier.preprocess import remove_tags
 
 
 class TestUtils(unittest.TestCase):

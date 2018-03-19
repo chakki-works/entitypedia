@@ -5,7 +5,7 @@ from pprint import pprint
 
 from entitypedia.knowledge_ner.recognizer import KnowledgeBaseRecognizer
 from entitypedia.knowledge_ner.reader import read_csv
-from entitypedia.corpora.wikipedia.extractor import load_jsonl
+from entitypedia.corpora.datasets import load_jsonl
 
 
 class TestRecognizer(unittest.TestCase):

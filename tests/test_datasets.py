@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from entitypedia.corpora.datasets import SeedLoader, WikiPageLoader, CategoryLoader
+from entitypedia.corpora.datasets import SeedLoader, WikiPageLoader, CategoryLoader, save_jsonl
 from entitypedia.corpora.datasets import DocumentClassifierDataset, NamedEntityDictionary
 from entitypedia.corpora.datasets import save_jsonl
 
