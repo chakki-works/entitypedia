@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
-import os
 import unittest
 from pprint import pprint
-
-from gensim.corpora.dictionary import Dictionary
-from entitypedia.classifier.utils import load_jsonl
 
 from entitypedia.corpora.annotator import Annotator
 
@@ -66,83 +62,3 @@ class TestAnnotator(unittest.TestCase):
         for e in annotated['entities']:
             i, j = e['beginOffset'], e['endOffset']
             self.assertEqual(text[i: j], e['entity'])
-
-    def test_annotate_entity(self):
-        data_dir = os.path.join(os.path.dirname(__file__), '../data/interim/')
-        labels = Dictionary.load(os.path.join(data_dir, 'labels.dic'))
-        article_entity = load_jsonl(os.path.join(data_dir, 'article_entity.jsonl'))
-        abstracts = load_jsonl(os.path.join(data_dir, 'abstracts.jsonl'))
-        articles = load_jsonl(os.path.join(data_dir, '../abstracts.jsonl'))
-
-        id2ne = {d['wikipedia_id']: labels[int(d['ne_id'])] for d in article_entity}
-        title2ne = {d['title']: id2ne.get(d['id'], 'other') for d in articles}
-        annotator = Annotator(dic=title2ne)
-        for i, a in enumerate(abstracts):
-            if i == 100:
-                break
-            pprint(annotator.annotate(a['abstract']))
-
-    def load_concept(self, file):
-        import csv
-        with open(file) as f:
-            reader = csv.reader(f)
-            ids = {row[2] for row in reader}
-        return ids
-
-    def test_create_dictionary(self):
-        """
-        固有表現認識用の辞書を作成する
-        """
-        data_dir = os.path.join(os.path.dirname(__file__), '../data/interim/')
-        labels = Dictionary.load(os.path.join(data_dir, 'labels.dic'))
-        article_entity = load_jsonl(os.path.join(data_dir, 'article_entity.jsonl'))
-        abstracts = load_jsonl(os.path.join(data_dir, 'abstracts.jsonl'))
-        articles = load_jsonl(os.path.join(data_dir, '../abstracts.jsonl'))
-        from entitypedia.classifier.baseline_logreg import load_disambig_ids
-        disambig_ids = load_disambig_ids(os.path.join(data_dir, 'disambig_id.csv'))
-        concept_ids = self.load_concept(os.path.join(os.path.dirname(__file__), '../data/raw/seeds/concept.csv'))
-        remove_ids = disambig_ids | concept_ids
-
-        id2ne = {d['wikipedia_id']: labels[int(d['ne_id'])] for d in article_entity}
-        title2ne = [{d['title']: id2ne[d['id']]} for d in articles
-                    if d['id'] not in remove_ids and id2ne.get(d['id']) != 'concept' and d['id'] in id2ne]
-        from entitypedia.corpora.wikipedia.extractor import save_jsonl
-        save_file = os.path.join(data_dir, 'title_entity.jsonl')
-        save_jsonl(title2ne, save_file)
-
-    def test_bio(self):
-        data_dir = os.path.join(os.path.dirname(__file__), '../data/interim/')
-        labels = Dictionary.load(os.path.join(data_dir, 'labels.dic'))
-        article_entity = load_jsonl(os.path.join(data_dir, 'article_entity.jsonl'))
-        abstracts = load_jsonl(os.path.join(data_dir, 'abstracts.jsonl'))
-        articles = load_jsonl(os.path.join(data_dir, '../abstracts.jsonl'))
-
-        id2ne = {d['wikipedia_id']: labels[int(d['ne_id'])] for d in article_entity}
-        title2ne = {d['title']: id2ne.get(d['id'], 'other') for d in articles}
-        annotator = Annotator(dic=title2ne)
-        f = open('dataset.tsv', 'w')
-        total = 0
-        error = 0
-        for i, a in enumerate(abstracts):
-            try:
-                total += 1
-                text, tags = annotator.to_bio(a['abstract'])
-            except IndexError:
-                error += 1
-                continue
-
-            for char, tag in zip(text, tags):
-                f.write('{}\t{}\n'.format(char, tag))
-            f.write('\n')
-        f.close()
-        print('{} / {}'.format(error, total))
-
-    def test_concept(self):
-        data_dir = os.path.join(os.path.dirname(__file__), '../data/interim/')
-        labels = Dictionary.load(os.path.join(data_dir, 'labels.dic'))
-        article_entity = load_jsonl(os.path.join(data_dir, 'article_entity.jsonl'))
-        articles = load_jsonl(os.path.join(data_dir, '../abstracts.jsonl'))
-        id2ne = {d['wikipedia_id']: labels[int(d['ne_id'])] for d in article_entity}
-        concept = [d['title'] for d in articles if id2ne.get(d['id']) == 'concept']
-        for word in concept:
-            print(word)
