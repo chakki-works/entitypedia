@@ -7,12 +7,13 @@ import argparse
 import csv
 import glob
 import os
-from collections import namedtuple
+import re
+from collections import namedtuple, defaultdict
 
 from gensim.corpora.dictionary import Dictionary
 
 from entitypedia.corpora.wikipedia.extractor import load_jsonl, save_jsonl
-from entitypedia.classifier.baseline_logreg import load_disambig_ids
+from entitypedia.classifier.utils import tokenize
 from entitypedia.corpora.annotator import Annotator
 
 
@@ -66,11 +67,33 @@ class WikiPageLoader(object):
 
 class CategoryLoader(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, file):
+        self._file = file
+        self._id2cat = defaultdict(list)
+        self._ptn_num = re.compile(r'\d')
+        self._ptn_year = re.compile(r'\d+年')
+        self._ptn_pare = re.compile(r'_\(.+\)')
+
+    def __contains__(self, item):
+        return item in self._id2cat
+
+    def __getitem__(self, item):
+        return self._id2cat[item]
+
+    def _normalize_category(self, text):
+        category = self._ptn_num.sub('0', text)
+        category = self._ptn_year.sub('0年', category)
+        category = self._ptn_pare.sub('', category)
+        words = tokenize(category)
+
+        return words[-1]
 
     def load(self):
-        pass
+        with open(self._file) as f:
+            for line in f:
+                id, cat = line.strip().split('\t')
+                cat = self._normalize_category(cat)
+                self._id2cat[id].append(cat)
 
 
 class DatasetCreator(object):
@@ -81,7 +104,7 @@ class DatasetCreator(object):
 
 class DocumentClassifierDataset(DatasetCreator):
 
-    def __init__(self, wiki_extracted_dir, seed_dir):
+    def __init__(self, wiki_extracted_dir, seed_dir=''):
         super(DatasetCreator).__init__()
         self._seeds = SeedLoader(seed_dir)
         self._pages = WikiPageLoader(wiki_extracted_dir).load()
@@ -102,31 +125,46 @@ class DocumentClassifierDataset(DatasetCreator):
             yield {'id': page.id, 'text': page.text}
 
 
-class NamedEntityDataset(object):
+class NamedEntityDictionary(DatasetCreator):
 
-    def __init__(self):
+    def __init__(self, label_dic, article_entity, wiki_dir, disambig_file):
         super(DatasetCreator).__init__()
+        self._title2ne = {}
+        self._label_dic = label_dic
+        self._article_entity = article_entity
+        self._wiki_dir = wiki_dir
+        self._disambig_file = disambig_file
 
+    def __contains__(self, item):
+        return item in self._title2ne
 
-def create_named_entity_dictionary(args):
-    """Create named entity dictionary.
+    def __getitem__(self, item):
+        return self._title2ne[item]
 
-    Args:
-        args: parameters
-    """
-    # Load files.
-    labels = Dictionary.load(args.label_dic)
-    article_entity = load_jsonl(args.article_entity)
-    articles = load_jsonl(args.articles)
-    disambig_ids = load_disambig_ids(args.disambig_file)
+    def create(self):
+        """Create named entity dictionary.
 
-    # Transform entity id to entity name.
-    id2ne = {d['wikipedia_id']: labels[int(d['ne_id'])] for d in article_entity}
-    title2ne = [{'title': d['title'], 'type': id2ne[d['id']]} for d in articles
-                if d['id'] not in disambig_ids and id2ne.get(d['id']) != 'concept' and d['id'] in id2ne]
+        Args:
+            args: parameters
+        """
+        # Load files.
+        labels = Dictionary.load(self._label_dic)
+        article_entity = load_jsonl(self._article_entity)
+        pages = WikiPageLoader(self._wiki_dir).load()
+        disambig_ids = load_disambig_ids(self._disambig_file)
 
-    # Save named entity dictionary.
-    save_jsonl(title2ne, args.title_entity)
+        # Transform entity id to entity name.
+        id2ne = {d['id']: labels[int(d['ne_id'])] for d in article_entity}
+        for page in pages:
+            if page.id in disambig_ids:
+                continue
+            if id2ne.get(page.id) == 'concept':
+                continue
+            if page.id not in id2ne:
+                continue
+            self._title2ne[page.title] = id2ne[page.id]
+
+        # Todo: include redirect string
 
 
 def create_iob2data(args):
@@ -157,6 +195,13 @@ def create_iob2data(args):
     print('{} / {}'.format(error, total))
 
 
+def load_disambig_ids(file_path):
+    with open(file_path) as f:
+        ids = {line.strip() for line in f}
+
+    return ids
+
+
 if __name__ == '__main__':
     DATA_DIR = os.path.join(os.path.dirname(__file__), '../../data/interim')
     parser = argparse.ArgumentParser(description='Training a classifier')
@@ -169,5 +214,4 @@ if __name__ == '__main__':
     parser.add_argument('--title_entity', default=os.path.join(DATA_DIR, 'title_entity.jsonl'))
     parser.add_argument('--iob2', default=os.path.join(DATA_DIR, 'iob2.tsv'))
     args = parser.parse_args()
-    create_named_entity_dictionary(args)
     create_iob2data(args)

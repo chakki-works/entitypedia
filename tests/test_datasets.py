@@ -2,7 +2,7 @@ import os
 import unittest
 
 from entitypedia.corpora.datasets import SeedLoader, WikiPageLoader, CategoryLoader
-from entitypedia.corpora.datasets import DocumentClassifierDataset, NamedEntityDataset
+from entitypedia.corpora.datasets import DocumentClassifierDataset, NamedEntityDictionary
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -39,11 +39,13 @@ class TestCategoryLoader(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.file = os.path.join(DATA_DIR, 'raw/categories.tsv')
+        cls.file = os.path.join(DATA_DIR, 'categories.tsv')
 
     def test_load(self):
         loader = CategoryLoader(self.file)
         loader.load()
+
+        self.assertEqual(len(loader._id2cat), 7)
 
 
 class TestDocumentClassifierDataset(unittest.TestCase):
@@ -63,3 +65,20 @@ class TestDocumentClassifierDataset(unittest.TestCase):
     def test_create_prediction(self):
         generator = self.dataset.create_prediction_set()
         self.assertEqual(len(list(generator)), 11)
+
+
+class TestNamedEntityDictionary(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        DATA_DIR = os.path.join(os.path.dirname(__file__), '../data')
+        cls.wiki_dir = os.path.join(DATA_DIR, 'raw/extracted')
+        cls.disambig_file = os.path.join(DATA_DIR, 'raw/disambig_id.csv')
+        cls.label_file = os.path.join(DATA_DIR, 'interim/labels.dic')
+        cls.article_entity = os.path.join(DATA_DIR, 'interim/article_entity.jsonl')
+
+    def setUp(self):
+        self.dictionary = NamedEntityDictionary(self.label_file, self.article_entity, self.wiki_dir, self.disambig_file)
+
+    def test_create(self):
+        self.dictionary.create()
