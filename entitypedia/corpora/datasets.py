@@ -127,12 +127,11 @@ class DocumentClassifierDataset(DatasetCreator):
 
 class NamedEntityDictionary(DatasetCreator):
 
-    def __init__(self, label_dic, article_entity, wiki_dir, disambig_file):
+    def __init__(self, label_dic, article_entity, disambig_file):
         super(DatasetCreator).__init__()
         self._title2ne = {}
         self._label_dic = label_dic
         self._article_entity = article_entity
-        self._wiki_dir = wiki_dir
         self._disambig_file = disambig_file
 
     def __contains__(self, item):
@@ -149,20 +148,18 @@ class NamedEntityDictionary(DatasetCreator):
         """
         # Load files.
         labels = Dictionary.load(self._label_dic)
-        article_entity = load_jsonl(self._article_entity)
-        pages = WikiPageLoader(self._wiki_dir).load()
+        pages = load_jsonl(self._article_entity)
         disambig_ids = load_disambig_ids(self._disambig_file)
 
-        # Transform entity id to entity name.
-        id2ne = {d['id']: labels[int(d['ne_id'])] for d in article_entity}
         for page in pages:
-            if page.id in disambig_ids:
+            page_id = page['id']
+            title = page['title']
+            entity_type = labels[page['ne_id']]
+            if page_id in disambig_ids:
                 continue
-            if id2ne.get(page.id) == 'concept':
+            if entity_type == 'concept':
                 continue
-            if page.id not in id2ne:
-                continue
-            self._title2ne[page.title] = id2ne[page.id]
+            self._title2ne[title] = entity_type
 
         # Todo: include redirect string
 
@@ -240,8 +237,8 @@ if __name__ == '__main__':
     parser.add_argument('--articles', default=os.path.join(DATA_DIR, '../abstracts.jsonl'))
     parser.add_argument('--abstracts', default=os.path.join(DATA_DIR, 'abstracts.jsonl'))
     parser.add_argument('--article_entity', default=os.path.join(DATA_DIR, 'article_entity.jsonl'))
-    parser.add_argument('--label_dic', default=os.path.join(DATA_DIR, 'labels.dic'), help='label dictionary')
-    parser.add_argument('--disambig_file', default=os.path.join(DATA_DIR, 'disambig_id.csv'), help='disambiguation ids')
+    parser.add_argument('--label_dic', default=os.path.join(DATA_DIR, 'labels.dic'))
+    parser.add_argument('--disambig_file', default=os.path.join(DATA_DIR, 'disambig_id.csv'))
     parser.add_argument('--title_entity', default=os.path.join(DATA_DIR, 'title_entity.jsonl'))
     parser.add_argument('--iob2', default=os.path.join(DATA_DIR, 'iob2.tsv'))
     args = parser.parse_args()

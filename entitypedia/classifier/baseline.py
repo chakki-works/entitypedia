@@ -36,6 +36,7 @@ def load_dataset(wiki_dir, seed_dir, categories):
 def load_prediction_dataset(wiki_dir, ignored_ids, categories):
     X, ids = [], []
     cats = []
+    titles = []
     dataset = DocumentClassifierDataset(wiki_dir)
     for j in dataset.create_prediction_set(ignored_ids):
         id = j['id']
@@ -49,8 +50,9 @@ def load_prediction_dataset(wiki_dir, ignored_ids, categories):
         X.append(text)
         ids.append(id)
         cats.append(' '.join(categories[id]))
+        titles.append(j['title'])
 
-    return X, cats, ids
+    return X, cats, ids, titles
 
 
 def load_categories(file_path):
@@ -99,7 +101,7 @@ def main(args):
 
     print('Loading dataset for prediction...')
     disambig_ids = load_disambig_ids(args.disambig_file)
-    X, cats, ids = load_prediction_dataset(args.pred_data, disambig_ids, categories)
+    X, cats, ids, titles = load_prediction_dataset(args.wiki_dir, disambig_ids, categories)
 
     print('Vectorizing...')
     X = vectorizer.transform(X)
@@ -110,7 +112,8 @@ def main(args):
     y_pred = clf.predict(X)
 
     print('Saving...')
-    outputs = [{'id': id, 'ne_id': str(ne_id)} for id, ne_id in zip(ids, y_pred)]
+    outputs = [{'id': id, 'ne_id': ne_id, 'title': title}
+               for id, ne_id, title in zip(ids, y_pred, titles)]
     save_jsonl(outputs, args.save_file)
     label_dict.save(args.label_dic)
 
@@ -123,7 +126,7 @@ if __name__ == '__main__':
     parser.add_argument('--seed_dir', default=os.path.join(DATA_DIR, 'seeds'))
     parser.add_argument('--category', default=os.path.join(DATA_DIR, 'categories.tsv'))
     parser.add_argument('--disambig_file', default=os.path.join(DATA_DIR, 'disambig_id.csv'))
-    parser.add_argument('--save_file', default=os.path.join(SAVE_DIR, 'article_entity.jsonl'))
+    parser.add_argument('--save_file', default=os.path.join(SAVE_DIR, 'pages.jsonl'))
     parser.add_argument('--label_dic', default=os.path.join(SAVE_DIR, 'labels.dic'))
     args = parser.parse_args()
     main(args)
