@@ -4,6 +4,8 @@ import urllib.parse
 
 from bs4 import BeautifulSoup
 
+IGNORED = 'IGNORED'
+
 
 class Annotator(object):
     """
@@ -163,7 +165,7 @@ class Annotator(object):
         return decoded_text
 
     def _href2entity_type(self, links):
-        chunk_types = [self._dic.get(l['href'], 'OTHER') for l in links]
+        chunk_types = [self._dic.get(l['href'], IGNORED) for l in links]
 
         return chunk_types
 
@@ -176,6 +178,8 @@ class Annotator(object):
         }
 
         for (begin_offset, end_offset), entity_type in zip(spans, entity_types):
+            if entity_type == IGNORED:
+                continue
             entity = {
                 'entity': clean_text[begin_offset: end_offset],
                 'type': entity_type,
