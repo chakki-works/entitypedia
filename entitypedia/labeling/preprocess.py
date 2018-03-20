@@ -8,6 +8,7 @@ import re
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.externals import joblib
+from gensim.corpora.dictionary import Dictionary
 
 UNK = '<UNK>'
 PAD = '<PAD>'
@@ -20,43 +21,35 @@ def normalize_number(text):
 
 class Preprocessor(BaseEstimator, TransformerMixin):
 
-    def __init__(self, window_size=3, word_embeddings=None, vocab_init=None):
+    def __init__(self, window_size=3, word_embeddings=None):
         self._window_size = window_size
         self._word_embeddings = word_embeddings
-        self._vocab_init = vocab_init or {}
-        self.word_dic = {PAD: 0, UNK: 1}
-        self.char_dic = {PAD: 0, UNK: 1}
-        self.label_dic = {PAD: 0}
+        self.word_dic = Dictionary()
+        self.label_dic = Dictionary()
 
     def fit(self, X, y=None):
-        for w in set(itertools.chain(*X)) | set(self._vocab_init):
-            self.word_dic[w] = len(self.word_dic)
-
-        # create label dictionary
-        for t in set(itertools.chain(*y)):
-            self.label_dic[t] = len(self.label_dic)
+        self.word_dic.add_documents(X)
+        self.label_dic.add_documents(y)
 
         return self
 
     def transform(self, X, y=None):
         inputs = []
-        outputs = []
+        outputs = list(itertools.chain(*y))
         for sent in X:
             padded_sent = self.padding(sent)
             for i in range(self._window_size, len(sent) + self._window_size):
-                window_words = padded_sent[i - self._window_size: i + self._window_size]
+                window_words = padded_sent[i - self._window_size: i + self._window_size + 1]
                 embedding = self.to_embedding(window_words)
+                assert embedding.shape == ((self._window_size * 2 + 1) * 50,)
                 inputs.append(embedding)
 
-        if y is not None:
-            for labels in y:
-                padded_labels = self.padding(labels)
-            y = np.array([[self.label_dic[t] for t in sent] for sent in y])
+        assert len(inputs) == len(outputs)
 
         return (inputs, outputs) if outputs is not None else inputs
 
     def padding(self, sent):
-        return [UNK] * self._window_size + sent + [UNK] * self._window_size
+        return [PAD] * self._window_size + sent + [PAD] * self._window_size
 
     def to_embedding(self, sent):
         embs = [self._word_embeddings[w]
@@ -80,3 +73,28 @@ class Preprocessor(BaseEstimator, TransformerMixin):
         p = joblib.load(file_path)
 
         return p
+
+
+def batch_iter(data, labels, batch_size=32, shuffle=True, preprocess=None):
+    num_batches_per_epoch = int((len(data) - 1) / batch_size) + 1
+
+    def data_generator():
+        """
+        Generates a batch iterator for a dataset.
+        """
+        data_size = len(data)
+        while True:
+            indices = np.arange(data_size)
+            # Shuffle the data at each epoch
+            if shuffle:
+                indices = np.random.permutation(indices)
+
+            for batch_num in range(num_batches_per_epoch):
+                start_index = batch_num * batch_size
+                end_index = min((batch_num + 1) * batch_size, data_size)
+                # X = [d[indices[start_index: end_index]] for d in data]
+                X = [data[i] for i in indices[start_index: end_index]]
+                y = [labels[i] for i in indices[start_index: end_index]]
+                yield preprocess(X, y)
+
+    return num_batches_per_epoch, data_generator()
