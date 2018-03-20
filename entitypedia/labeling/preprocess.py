@@ -10,11 +10,10 @@ import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.externals import joblib
 from gensim.corpora.dictionary import Dictionary
-t = MeCab.Tagger('-Owakati')
 
+t = MeCab.Tagger('-Owakati')
 UNK = '<UNK>'
 PAD = '<PAD>'
-unk_vec = np.zeros(shape=(50,))
 
 
 def normalize_number(text):
@@ -23,11 +22,13 @@ def normalize_number(text):
 
 class Preprocessor(BaseEstimator, TransformerMixin):
 
-    def __init__(self, window_size=3, word_embeddings=None):
+    def __init__(self, window_size=3, word_embeddings=None, vector_size=50):
         self._window_size = window_size
         self._word_embeddings = word_embeddings
         self.word_dic = Dictionary()
         self.label_dic = Dictionary()
+        self._vector_size = vector_size
+        self._unk_vec = np.zeros(shape=(vector_size,))
 
     def fit(self, X, y=None):
         self.word_dic.add_documents(X)
@@ -43,7 +44,7 @@ class Preprocessor(BaseEstimator, TransformerMixin):
             for i in range(self._window_size, len(sent) + self._window_size):
                 window_words = padded_sent[i - self._window_size: i + self._window_size + 1]
                 embedding = self.to_embedding(window_words)
-                assert embedding.shape == ((self._window_size * 2 + 1) * 50,)
+                assert embedding.shape == ((self._window_size * 2 + 1) * self._vector_size,)
                 inputs.append(embedding)
 
         if y is not None:
@@ -59,7 +60,7 @@ class Preprocessor(BaseEstimator, TransformerMixin):
     def to_embedding(self, sent):
         embs = [self._word_embeddings[w]
                 if w in self._word_embeddings else
-                unk_vec for w in sent]
+                self._unk_vec for w in sent]
         return np.concatenate(embs)
 
     def fit_transform(self, X, y=None, **fit_params):
