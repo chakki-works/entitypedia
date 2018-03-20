@@ -5,10 +5,12 @@ Preprocessors.
 import itertools
 import re
 
+import MeCab
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.externals import joblib
 from gensim.corpora.dictionary import Dictionary
+t = MeCab.Tagger('-Owakati')
 
 UNK = '<UNK>'
 PAD = '<PAD>'
@@ -98,3 +100,17 @@ def batch_iter(data, labels, batch_size=32, shuffle=True, preprocess=None):
                 yield preprocess(X, y)
 
     return num_batches_per_epoch, data_generator()
+
+
+def tokenize(text):
+    """Tokenize Japanese text.
+
+    Args:
+        text: Japanese string.
+
+    Returns:
+        A list of words.
+    """
+    words = t.parse(text).rstrip().split()
+
+    return words
