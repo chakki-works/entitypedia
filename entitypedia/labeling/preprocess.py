@@ -37,7 +37,7 @@ class Preprocessor(BaseEstimator, TransformerMixin):
 
     def transform(self, X, y=None):
         inputs = []
-        outputs = list(itertools.chain(*y))
+
         for sent in X:
             padded_sent = self.padding(sent)
             for i in range(self._window_size, len(sent) + self._window_size):
@@ -46,9 +46,12 @@ class Preprocessor(BaseEstimator, TransformerMixin):
                 assert embedding.shape == ((self._window_size * 2 + 1) * 50,)
                 inputs.append(embedding)
 
-        assert len(inputs) == len(outputs)
-
-        return (inputs, outputs) if outputs is not None else inputs
+        if y is not None:
+            outputs = list(itertools.chain(*y))
+            assert len(inputs) == len(outputs)
+            return inputs, outputs
+        else:
+            return inputs
 
     def padding(self, sent):
         return [PAD] * self._window_size + sent + [PAD] * self._window_size
