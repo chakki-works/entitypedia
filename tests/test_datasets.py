@@ -79,7 +79,7 @@ class TestNamedEntityDictionary(unittest.TestCase):
         cls.article_entity = os.path.join(cls.DATA_DIR, 'interim/article_entity.jsonl')
 
     def setUp(self):
-        self.dictionary = NamedEntityDictionary(self.label_file, self.article_entity, self.wiki_dir, self.disambig_file)
+        self.dictionary = NamedEntityDictionary(self.label_file, self.article_entity, self.disambig_file)
 
     def test_create(self):
         self.dictionary.create()
