@@ -112,7 +112,7 @@ def main(args):
     y_pred = clf.predict(X)
 
     print('Saving...')
-    outputs = [{'id': id, 'ne_id': ne_id, 'title': title}
+    outputs = [{'id': int(id), 'ne_id': int(ne_id), 'title': title}
                for id, ne_id, title in zip(ids, y_pred, titles)]
     save_jsonl(outputs, args.save_file)
     label_dict.save(args.label_dic)

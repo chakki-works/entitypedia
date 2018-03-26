@@ -116,13 +116,13 @@ class DocumentClassifierDataset(DatasetCreator):
                 continue
             seed = self._seeds[page.id]
 
-            yield {'id': page.id, 'text': page.text, 'label': seed.type}
+            yield {'id': page.id, 'text': page.text, 'title': page.title, 'label': seed.type}
 
     def create_prediction_set(self, ignored_ids=()):
         for page in self._pages:
             if page.id in ignored_ids:
                 continue
-            yield {'id': page.id, 'text': page.text}
+            yield {'id': page.id, 'text': page.text, 'title': page.title}
 
 
 class NamedEntityDictionary(DatasetCreator):
