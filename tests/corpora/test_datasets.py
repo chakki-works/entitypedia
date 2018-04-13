@@ -1,11 +1,12 @@
 import os
+import re
 import unittest
 
 from entitypedia.corpora.datasets import SeedLoader, WikiPageLoader, CategoryLoader, save_jsonl
 from entitypedia.corpora.datasets import DocumentClassifierDataset, NamedEntityDictionary
 from entitypedia.corpora.datasets import save_jsonl
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+DATA_DIR = os.path.join(os.path.dirname(__file__), '../data')
 
 
 class TestSeedLoader(unittest.TestCase):
@@ -87,3 +88,18 @@ class TestNamedEntityDictionary(unittest.TestCase):
         file = os.path.join(self.DATA_DIR, 'interim/title_entity.jsonl')
         objs = [{k: v} for k, v in self.dictionary._title2ne.items()]
         save_jsonl(objs, file)
+
+    def test_create_wiki_sents(self):
+        data_dir = os.path.join(os.path.dirname(__file__), '../../data')
+        dir = os.path.join(data_dir, 'extracted')
+        save_file = os.path.join(data_dir, 'interim/wiki_sents.txt')
+        loader = WikiPageLoader(dir)
+        pages = loader.load()
+        with open(save_file, 'w') as f:
+            for page in pages:
+                sents = re.split(r'\n|。', page.text)
+                for i, sent in enumerate(sents[1:], 1):
+                    if sent == '':
+                        continue
+                    if 'a href' in sent:
+                        f.write('{}\n'.format(sent))
