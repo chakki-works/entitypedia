@@ -51,3 +51,21 @@ class TestPerformance(unittest.TestCase):
         print(s_true.intersection(s_pred))
         print(s_true - s_pred)
         print(s_pred - s_true)
+
+    def test_create_corpus(self):
+        remove_types = {}
+        X_true, y_true = to_iob2(self.mainichi_dir, remove_types)
+        with open('datasets.tsv', 'w') as f:
+            for doc, label in zip(X_true, y_true):
+                for char, tag in zip(doc, label):
+                    if tag.endswith('ignored'):
+                        continue
+                    if char == '　':
+                        continue
+                    if char == '。':
+                        f.write('{}\t{}\n\n'.format(char, tag))
+                    elif char == '\n':
+                        f.write('\n')
+                    else:
+                        f.write('{}\t{}\n'.format(char, tag))
+                f.write('\n')

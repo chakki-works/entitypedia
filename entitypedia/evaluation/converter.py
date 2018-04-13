@@ -6,20 +6,21 @@ from bs4 import BeautifulSoup
 from entitypedia.evaluation.annotator import Annotator
 
 
+func = lambda s: s.encode('utf-8').decode('utf-8')
+
+
 def get_text(text):
     soup = BeautifulSoup(text, 'lxml')
-    text = soup.find('text')
-    func = lambda s: s.encode('utf-8').decode('utf-8')
-    text = ''.join(map(func, text.contents))
-
-    return text
+    for text in [soup.find('headline'), soup.find('text')]:
+        text = ''.join(map(func, text.contents))
+        yield text
 
 
 def load_text(file_names, encoding):
     for file_name in file_names:
         with open(file_name, encoding=encoding) as f:
-            text = get_text(text=f.read())
-            yield text
+            for text in get_text(text=f.read()):
+                yield text
 
 
 def to_iob2(dir, remove_types={}):
