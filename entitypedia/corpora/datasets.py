@@ -8,6 +8,7 @@ import csv
 import glob
 import json
 import os
+import random
 import re
 from collections import namedtuple, defaultdict
 
@@ -24,6 +25,7 @@ class SeedLoader(object):
         self._seed = namedtuple('Seed', 'title url id image_url abstract type')
         self._seeds = []
         self._id2seed = {}
+        self._type2seeds = defaultdict(list)
 
     def __contains__(self, item):
         return item in self._id2seed
@@ -47,6 +49,15 @@ class SeedLoader(object):
                     seed = self._seed(*line+[entity_type])
                     self._seeds.append(seed)
                     self._id2seed[seed.id] = seed
+                    self._type2seeds[seed.type].append(seed)
+
+    def sample(self, k=100):
+        seed_per_type = {}
+        for entity_type, seeds in self._type2seeds.items():
+            seed_subset = random.sample(seeds, min(k, len(seeds)))
+            seed_per_type[entity_type] = seed_subset
+
+        return seed_per_type
 
 
 class WikiPageLoader(object):

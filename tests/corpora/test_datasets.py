@@ -1,3 +1,4 @@
+import csv
 import os
 import re
 import unittest
@@ -22,6 +23,18 @@ class TestSeedLoader(unittest.TestCase):
         self.assertIsInstance(seeds._id2seed, dict)
         self.assertIsInstance(seeds._seeds, list)
         self.assertEqual(len(seeds._seeds), 10)
+
+    def test_seed_sampling(self):
+        seed_dir = os.path.join(os.path.dirname(__file__), '../../data/raw/seeds')
+        save_dir = os.path.join(os.path.dirname(__file__), '../../data/interim/')
+        seeds = SeedLoader(seed_dir)
+        seeds.load()
+        seed_per_type = seeds.sample()
+        with open(os.path.join(save_dir, 'seeds.csv'), 'w') as f:
+            writer = csv.writer(f, lineterminator='\n')
+            for entity_type, seeds in seed_per_type.items():
+                for seed in seeds:
+                    writer.writerow([entity_type, seed.title, seed.id])
 
 
 class TestWikiPageLoader(unittest.TestCase):
