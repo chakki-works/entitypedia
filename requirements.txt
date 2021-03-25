@@ -23,7 +23,7 @@ protobuf==3.4.0
 pyahocorasick==1.1.4
 pyparsing==2.2.0
 python-dateutil==2.6.1
-PyYAML==3.12
+PyYAML==5.4
 rdflib==4.2.2
 requests==2.18.4
 s3transfer==0.1.12
