@@ -19,7 +19,7 @@ Markdown==2.6.9
 MarkupSafe==1.0
 mecab-python3==0.7
 numpy==1.13.1
-protobuf==3.4.0
+protobuf==3.18.3
 pyahocorasick==1.1.4
 pyparsing==2.2.0
 python-dateutil==2.6.1
